@@ -955,7 +955,264 @@ const expandedRandomEvent=function expandedRandomEvent(){
  return Math.random()<.13?expandedRandomEvent._base():pick(ev);
 };
 expandedRandomEvent._base=randomEvent;randomEvent=expandedRandomEvent;
-S=load();enhanceInit();if(S&&!S.alive)deadModal=true;
+/* LIFEPATH WORLDS V4 CORE */
+const worldCareers=[{"id":"actor","icon":"🎭","name":"Film Actor","min":18,"base":16000,"required":25,"basic":"Audition for a role","big":"Shoot a blockbuster"},{"id":"musician","icon":"🎤","name":"Recording Artist","min":16,"base":12000,"required":35,"basic":"Record a single","big":"Go on tour"},{"id":"producer","icon":"🎧","name":"Music Producer","min":18,"base":18000,"required":38,"basic":"Produce a track","big":"Release an album"},{"id":"athlete","icon":"🏀","name":"Pro Athlete","min":18,"base":30000,"required":48,"basic":"Play a match","big":"Sign an endorsement"},{"id":"politician","icon":"🗳️","name":"Politician","min":25,"base":45000,"required":45,"basic":"Launch a campaign","big":"Debate a rival"},{"id":"director","icon":"🎬","name":"Movie Director","min":21,"base":32000,"required":52,"basic":"Direct a film","big":"Pitch a blockbuster"},{"id":"fighter","icon":"🥊","name":"Professional Fighter","min":18,"base":19000,"required":38,"basic":"Fight an opponent","big":"Challenge for a title"},{"id":"model","icon":"📸","name":"Fashion Model","min":18,"base":17000,"required":30,"basic":"Book a photoshoot","big":"Walk fashion week"},{"id":"astronaut","icon":"🚀","name":"Astronaut","min":24,"base":60000,"required":65,"basic":"Go on a mission","big":"Study the cosmos"},{"id":"mafia","icon":"🕶️","name":"Crime Syndicate","min":18,"base":25000,"required":30,"basic":"Complete a risky job","big":"Rise through the ranks"},{"id":"influencer","icon":"📱","name":"Content Creator","min":13,"base":10000,"required":20,"basic":"Publish a video","big":"Secure a sponsorship"},{"id":"military","icon":"🪖","name":"Military Service","min":18,"base":42000,"required":35,"basic":"Complete a deployment","big":"Earn a commendation"},{"id":"entrepreneur","icon":"🏢","name":"Tech Founder","min":18,"base":55000,"required":45,"basic":"Launch a product","big":"Pitch to investors"},{"id":"spy","icon":"🕵️","name":"Secret Agent","min":21,"base":52000,"required":58,"basic":"Complete a covert mission","big":"Run an intelligence operation"},{"id":"royal","icon":"👑","name":"Royal Court","min":18,"base":80000,"required":20,"basic":"Attend a state banquet","big":"Lead a royal initiative"}];
+const worldArts=[{"id":"movie","icon":"🎥","name":"A feature film","cost":9000,"min":19},{"id":"song","icon":"🎼","name":"A studio single","cost":1500,"min":14},{"id":"book","icon":"📖","name":"A published novel","cost":2200,"min":18},{"id":"game","icon":"🎮","name":"An indie video game","cost":3500,"min":18},{"id":"app","icon":"📲","name":"A mobile app","cost":4000,"min":18}];
+const worldLuxury=[{"id":"watch","icon":"⌚","name":"Luxury Watch","price":22000},{"id":"boat","icon":"🛥️","name":"Motor Yacht","price":380000},{"id":"jet","icon":"🛩️","name":"Private Jet","price":4800000},{"id":"jewelry","icon":"💍","name":"Diamond Necklace","price":69000},{"id":"artwork","icon":"🖼️","name":"Rare Artwork","price":115000}];
+const ensureWorld=function ensureWorld(){
+ if(!S)return null;
+ enhanceInit();
+ let w=S.extras.world;
+ if(!w||typeof w!=="object"){w={};S.extras.world=w;}
+ if(!Number.isFinite(w.fame))w.fame=0;
+ if(!Number.isFinite(w.followers))w.followers=0;
+ if(!Number.isFinite(w.karma))w.karma=50;
+ if(!Number.isFinite(w.wanted))w.wanted=0;
+ if(!Number.isFinite(w.prison))w.prison=0;
+ if(!Number.isFinite(w.convictions))w.convictions=0;
+ if(!Number.isFinite(w.royalties))w.royalties=0;
+ if(!Number.isFinite(w.lifetimeFame))w.lifetimeFame=0;
+ if(!Number.isFinite(w.vitality))w.vitality=80;
+ if(!Number.isFinite(w.crypto))w.crypto=0;
+ if(!Number.isFinite(w.polling))w.polling=30;
+ if(!Number.isFinite(w.winStreak))w.winStreak=0;
+ if(!Array.isArray(w.inventory))w.inventory=[];
+ if(!Array.isArray(w.awards))w.awards=[];
+ if(!Array.isArray(w.releases))w.releases=[];
+ if(!Array.isArray(w.conditions))w.conditions=[];
+ if(!Array.isArray(w.legacy))w.legacy=[];
+ if(!Array.isArray(w.estateHistory))w.estateHistory=[];
+ if(!Array.isArray(w.fameHistory))w.fameHistory=[];
+ if(!Array.isArray(w.influenceHistory))w.influenceHistory=[];
+ if(!Array.isArray(w.relationshipsHistory))w.relationshipsHistory=[];
+ if(!Number.isFinite(w.tenantIncome))w.tenantIncome=0;
+ if(!Number.isFinite(w.generations))w.generations=1;
+ if(!Number.isFinite(w.courtStanding))w.courtStanding=45;
+ if(!Number.isFinite(w.cult))w.cult=0;
+ if(!Number.isFinite(w.followersCult))w.followersCult=0;
+ if(!Number.isFinite(w.socialPosts))w.socialPosts=0;
+ if(!Number.isFinite(w.filmBudget))w.filmBudget=0;
+ if(!Number.isFinite(w.bonds))w.bonds=0;
+ if(!w.special||typeof w.special!=="object")w.special={id:null,skill:rand(18,44),level:0,progress:0,years:0,contract:0,awards:0};
+ const c=w.special;
+ if(!Number.isFinite(c.skill))c.skill=25;
+ if(!Number.isFinite(c.level))c.level=0;
+ if(!Number.isFinite(c.progress))c.progress=0;
+ if(!Number.isFinite(c.years))c.years=0;
+ if(!Number.isFinite(c.contract))c.contract=0;
+ if(!Number.isFinite(c.awards))c.awards=0;
+ return w;
+};
+const getCareer=function getCareer(){const w=ensureWorld();return w?worldCareers.find(c=>c.id===w.special.id):null;};
+const worldNotify=function worldNotify(icon,title,description,happy=0){
+ log(icon,title,description);if(happy)stat("happiness",happy);
+};
+const worldRecord=function worldRecord(award){const w=ensureWorld();if(!w.awards.includes(award)){w.awards.push(award);log("🏆","Achievement earned",`You earned the ${award} honor.`);}};
+const worldSpend=function worldSpend(n){if(S.money<n){notice(`You need ${cash(n)}.`,true);return false;}S.money-=n;return true;};
+const worldYear=function worldYear(){
+ if(!S||!S.alive)return;
+ const w=ensureWorld(),c=w.special,career=getCareer();
+ if(w.prison>0){
+  w.prison=Math.max(0,w.prison-1);
+  w.fame=Math.max(0,w.fame-1);
+  w.karma=Math.max(0,w.karma-2);
+  w.vitality=Math.max(0,w.vitality-2);
+  S.stats.happiness=clamp(S.stats.happiness-5);
+  S.money+=4000;
+  log("🔒","A year behind bars",`You served a year in prison. ${w.prison} year(s) remain.`);
+  if(w.prison===0){log("🔓","Released","You completed your sentence and returned home.");S.stats.happiness=clamp(S.stats.happiness+8);w.wanted=0;}
+ }
+ else if(career){
+  c.years++;
+  const earnings=Math.round(career.base*(.5+c.level*.4)+c.contract+Math.round(w.fame*600));
+  S.money+=earnings;
+  c.progress=Math.min(100,c.progress+rand(2,9));
+  c.skill=clamp(c.skill+rand(0,3));
+  if(c.progress>=100){c.level=Math.min(c.level+1,8);c.progress-=90;w.fame=clamp(w.fame+rand(3,8));log("🌟","Career breakthrough",`You advanced in your ${career.name} career to rank ${c.level+1}.`);}
+  log(career.icon,"Special career earnings",`${career.name} generated ${cash(earnings)} this year.`);
+  if(Math.random()<.13&&c.level>=3){worldRecord(`${career.name} Star Award`);c.awards++;}
+ }
+ if(w.royalties>0){const earned=Math.round(w.royalties*(.75+Math.random()*.5));S.money+=earned;w.royalties=Math.round(w.royalties*.93);log("🎵","Creative royalties",`Your past creative projects earned ${cash(earned)}.`);}
+ if(w.followers>0){const delta=Math.round(w.followers*((Math.random()-.32)*.12));w.followers=Math.max(0,w.followers+delta);if(delta>10000)log("📣","Growing audience",`You gained ${delta.toLocaleString()} followers this year.`);}
+ if(w.fame>0&&Math.random()<.25)w.fame=Math.max(0,w.fame-1);
+ if(w.crypto){const old=w.crypto;w.crypto=Math.max(0,Math.round(w.crypto*(.66+Math.random()*.65)));log("🪙","Digital market",`Your digital holdings ${w.crypto>=old?"grew":"fell"} by ${cash(Math.abs(w.crypto-old))}.`);}
+ if(w.bonds){const interest=Math.round(w.bonds*.04);w.bonds+=interest;log("🏦","Bond yield",`Your bonds earned ${cash(interest)}.`);}
+ for(const a of S.assets||[]){
+  if(a.tenant){
+   const yearly=Math.round(a.rent*12);
+   let earned=yearly;
+   if(Math.random()<.10){earned=Math.round(yearly*.5);log("🔧","Rental maintenance",`${a.name} needed repairs and brought in less rent.`);}
+   S.money+=earned;w.tenantIncome+=earned;
+   log("🏠","Rental income",`${a.name} earned ${cash(earned)} this year.`);
+  }
+ }
+ if(w.cult){const donations=rand(200,1500)*Math.max(1,Math.floor(w.cult/8));S.money+=donations;log("🕯️","Community donations",`Your spiritual community received ${cash(donations)} in donations.`);}
+ if(w.conditions.length){
+  if(Math.random()<.2){const illness=pick(w.conditions);stat("health",-rand(1,6));log("🩺","Health concerns",`${illness} is affecting your wellbeing.`);}
+ }
+ if(S.age>55)w.vitality=clamp(w.vitality-rand(1,3));
+ w.fameHistory.push(w.fame);if(w.fameHistory.length>24)w.fameHistory.shift();
+ w.estateHistory.push(Math.round(S.money+w.crypto+w.bonds));if(w.estateHistory.length>24)w.estateHistory.shift();
+ w.influenceHistory.push(w.followers);if(w.influenceHistory.length>24)w.influenceHistory.shift();
+ if(w.fame>=80)worldRecord("Household Name");
+ if(w.followers>=1e6)worldRecord("Million Followers");
+ if(w.generations>=2)worldRecord("Second Generation");
+ if(w.prison===0&&w.wanted>0)w.wanted=Math.max(0,w.wanted-rand(1,3));
+ save();render();
+};
+const crimeAction=function crimeAction(type){
+ const w=ensureWorld();if(!S||!S.alive||S.age<12||w.prison)return notice("This activity isn't available.",true);
+ const crimes={pickpocket:{name:"Pickpocket",gain:[150,900],chance:.75,sentence:[1,2],heat:4},
+ shoplift:{name:"Shoplifting",gain:[100,500],chance:.8,sentence:[1,2],heat:3},
+ burglary:{name:"Burglary",gain:[1500,12000],chance:.52,sentence:[2,7],heat:11},
+ theft:{name:"Vehicle theft",gain:[7000,32000],chance:.38,sentence:[3,9],heat:17},
+ heist:{name:"Bank heist",gain:[35000,160000],chance:.18,sentence:[6,16],heat:35}};
+ const q=crimes[type];if(!q)return;
+ if(!consume("crime-"+type))return;
+ const success=Math.random()<Math.max(.09,q.chance-(w.wanted/160));
+ w.karma=clamp(w.karma-rand(2,11));w.wanted=clamp(w.wanted+q.heat);
+ if(success){const gain=rand(...q.gain);S.money+=gain;worldNotify("💰",`${q.name} succeeded`,`You escaped with ${cash(gain)}. Your notoriety is rising.`,3);}
+ else{const years=rand(...q.sentence);const fine=rand(500,3500);S.money-=fine;w.prison=years;w.convictions++;S.job=null;w.special.id=null;worldNotify("🚨","Arrested",`You were caught during ${q.name.toLowerCase()}, fined ${cash(fine)}, and sentenced to ${years} years.`, -17);}
+ save();render();
+};
+const prisonAction=function prisonAction(type){
+ const w=ensureWorld();if(w.prison<=0)return;
+ const key="prison-"+type;if(!consume(key))return;
+ if(type==="study"){stat("smarts",rand(2,7));worldNotify("📚","Library time","You took classes and read books in prison.",3);}
+ if(type==="fitness"){stat("health",rand(3,8));w.vitality=clamp(w.vitality+5);worldNotify("🏋️","Exercise yard","You trained in the exercise yard.",3);}
+ if(type==="appeal"){if(Math.random()<.30+S.stats.smarts/350){w.prison=Math.max(0,w.prison-rand(1,3));worldNotify("⚖️","Successful appeal","The judge reduced your prison sentence.",12);}else worldNotify("⚖️","Appeal denied","Your appeal was unsuccessful.",-4);}
+ if(type==="parole"){if(w.prison<=3&&Math.random()<.4+w.karma/250){w.prison=0;w.wanted=0;worldNotify("🔓","Parole granted","You were released from prison!",15);}else worldNotify("🔒","Parole denied","You'll have to serve more time.",-5);}
+ if(type==="escape"){if(Math.random()<.16+S.stats.smarts/700){w.prison=0;w.wanted=rand(60,95);worldNotify("🏃","Fugitive","You escaped, but are now wanted by authorities.",9);}else{w.prison+=rand(1,3);worldNotify("🚨","Escape failed","You were caught and your sentence was extended.",-12);}}
+ save();render();
+};
+const specialAction=function specialAction(action,id){
+ const w=ensureWorld(),c=w.special;
+ if(!S.alive||w.prison)return notice("Unavailable right now.",true);
+ if(action==="join"){
+  const spec=worldCareers.find(x=>x.id===id);
+  if(!spec||S.age<spec.min)return notice("You do not meet the age requirement.",true);
+  if(id==="astronaut"&&(!S.degree||S.stats.smarts<70))return notice("Astronauts need a university degree and 70 smarts.",true);
+  if(id==="royal"&&!(w.royalBorn||w.fame>=80))return notice("This path requires royal ancestry or 80 fame.",true);
+  if(id==="military"&&S.stats.health<45)return notice("You need stronger health to enlist.",true);
+  if(c.id===id)return;
+  if(!confirm(`Start your career as ${spec.name}? This replaces your current special career.`))return;
+  w.special={id,skill:Math.max(20,c.skill-12),level:0,progress:0,years:0,contract:0,awards:0};
+  worldNotify(spec.icon,"A new career",`You began your journey as a ${spec.name}.`,7);
+  if(id==="mafia")w.karma=clamp(w.karma-8);
+ }else if(action==="leave"){const old=getCareer();if(!old)return;w.special.id=null;worldNotify("🚪","Changed direction",`You left your career in ${old.name}.`,-3);}
+ else{
+  const career=getCareer();if(!career)return;
+  if(!consume("special-"+action))return;
+  if(action==="train"){c.skill=clamp(c.skill+rand(7,13));c.progress=Math.min(100,c.progress+rand(4,10));stat("health",career.id==="fighter"||career.id==="athlete"?4:0);extraStat("stress",4);worldNotify("🏋️","Training completed",`Your ${career.name.toLowerCase()} skill increased to ${c.skill}.`,2);}
+  else if(action==="work"||action==="big"){
+   const hard=action==="big",difficulty=hard?rand(35,85):rand(15,70);
+   const success=Math.random()<Math.min(.92,Math.max(.13,(c.skill+c.level*7-difficulty+60)/120));
+   const paymin=hard?14000:1800;
+   const paymax=hard?75000:18000;
+   const prize=rand(paymin,paymax)*(c.level+1);
+   if(success){
+    S.money+=prize;c.progress=Math.min(105,c.progress+rand(hard?14:8,hard?32:21));c.skill=clamp(c.skill+rand(1,4));w.fame=clamp(w.fame+rand(hard?5:2,hard?14:7));
+    w.followers+=rand(hard?5000:500,hard?38000:9500)*(c.level+1);
+    if(["musician","producer","director","actor"].includes(career.id)){const royalties=Math.round(prize*.06);w.royalties+=royalties;w.releases.push({name:`${career.name} project #${w.releases.length+1}`,year:S.age,pay:prize});}
+    if(["fighter","athlete"].includes(career.id)){w.winStreak++;if(w.winStreak>=4)worldRecord("Champion");}
+    if(career.id==="politician"){w.polling=clamp(w.polling+rand(4,13));if(w.polling>=75)worldRecord("Elected Leader");}
+    if(career.id==="mafia"||career.id==="spy"){w.wanted=clamp(w.wanted+rand(1,12));w.karma=clamp(w.karma-rand(0,5));}
+    worldNotify(career.icon,hard?career.big:career.basic,`Success! You earned ${cash(prize)} and improved your reputation.`,rand(5,12));
+    if(hard&&Math.random()<.18){const award=`${career.name} Excellence`;worldRecord(award);c.awards++;}
+   }else{
+    c.progress=Math.max(0,c.progress-rand(1,7));extraStat("stress",7);
+    if(career.id==="fighter")stat("health",-rand(3,12));
+    if(career.id==="mafia"&&Math.random()<.25){w.prison=rand(1,5);w.convictions++;c.id=null;worldNotify("🚨","Caught","Your operation failed and you received a prison sentence.",-13);}
+    else worldNotify("💔","It didn't work out","Your attempt didn't succeed this time. Keep practicing.",-6);
+    if(career.id==="fighter"||career.id==="athlete")w.winStreak=0;
+   }
+  }else if(action==="contract"){
+   if(c.level<2)return notice("Build your career to level 3 first.",true);
+   c.contract+=rand(3000,14000);w.fame=clamp(w.fame+3);worldNotify("📝","Contract upgraded",`Your annual contract income rose to ${cash(c.contract)}.`,6);
+  }
+ }
+ save();render();
+};
+const socialAction=function socialAction(type){
+ const w=ensureWorld();if(!S.alive||S.age<13)return notice("Not old enough.",true);
+ if(!consume("social-"+type))return;
+ if(type==="post"){
+  const delta=rand(350,8500)*(1+Math.floor(w.fame/15));
+  w.followers+=delta;w.socialPosts++;w.fame=clamp(w.fame+rand(1,4));extraStat("creativity",4);
+  worldNotify("📱","Your post is live",`You gained ${delta.toLocaleString()} followers.`,4);
+ }else if(type==="viral"){
+  if(!worldSpend(800))return;
+  if(Math.random()<.45+S.extras.creativity/450){const delta=rand(15000,110000);w.followers+=delta;w.fame=clamp(w.fame+rand(5,11));worldNotify("🚀","Going viral",`${delta.toLocaleString()} new people followed you!`,15);}
+  else{extraStat("stress",5);worldNotify("📉","Limited reach","The post didn't catch on.",-4);}
+ }else if(type==="sponsor"){
+  if(w.followers<5000)return notice("You need at least 5,000 followers.",true);
+  const income=Math.round(250+w.followers*.007);S.money+=income;w.fame=clamp(w.fame+1);worldNotify("💸","Brand partnership",`You earned ${cash(income)} promoting a brand.`,4);
+ }else if(type==="stream"){const inc=rand(200,1500)+Math.floor(w.followers/300);S.money+=inc;w.followers+=rand(100,3000);worldNotify("📹","Live stream",`Your stream generated ${cash(inc)} and attracted more fans.`,5);}
+ save();render();
+};
+const worldAssetAction=function worldAssetAction(action,idx){
+ const w=ensureWorld(),a=S.assets[Number(idx)];
+ if(!a)return;
+ if(action==="rent"){
+  if(a.type!=="Property"||a.tenant)return notice("Only empty properties can be rented.",true);
+  a.tenant=true;a.rent=Math.max(800,Math.round((a.value||a.cost)*.005));
+  worldNotify("🗝️","Tenant found",`${a.name} is now rented for ${cash(a.rent)} a month.`,4);
+ }else if(action==="evict"){
+  if(!a.tenant)return;a.tenant=false;a.rent=0;worldNotify("🏡","Tenancy ended",`${a.name} is now vacant.`);
+ }else if(action==="renovate"){
+  const cost=Math.round((a.value||a.cost)*.06);
+  if(!worldSpend(cost))return;a.value=Math.round((a.value||a.cost)*1.10);
+  worldNotify("🛠️","Property renovated",`You spent ${cash(cost)} improving ${a.name}.`,5);
+ }
+ save();render();
+};
+const worldFinanceAction=function worldFinanceAction(type,amount){
+ const w=ensureWorld();
+ if(!S.alive||S.age<18)return;
+ const n=Number(amount);
+ if(type==="buycrypto"||type==="buybonds"){
+  if(!Number.isFinite(n)||n<1||!worldSpend(n))return;
+  w[type==="buycrypto"?"crypto":"bonds"]+=n;worldNotify("📈","Investment made",`You invested ${cash(n)} in ${type==="buycrypto"?"digital assets":"government bonds"}.`);
+ }else if(type==="sellcrypto"||type==="sellbonds"){
+  const k=type==="sellcrypto"?"crypto":"bonds";S.money+=w[k];worldNotify("💰","Portfolio liquidated",`You collected ${cash(w[k])}.`);w[k]=0;
+ }else if(type==="lottery"){
+  if(!worldSpend(100))return;
+  if(Math.random()<.02){const prize=rand(50000,350000);S.money+=prize;worldNotify("🎉","Lottery winner",`You won ${cash(prize)}!`,15);}
+  else worldNotify("🎟️","No winning ticket","Better luck next time.");
+ }else if(type==="donate"){
+  if(!worldSpend(1000))return;w.karma=clamp(w.karma+9);extraStat("reputation",8);worldNotify("🤲","Charitable giving","You donated $1,000 to a worthy cause.",8);
+ }else if(type==="findheirloom"){
+  if(!consume("heirloom"))return;const name=pick(["Antique pocket watch","Vintage telescope","Old coin collection","Family painting","Rare vinyl record"]);const value=rand(500,18000);
+  w.inventory.push({name,value,icon:"💎"});worldNotify("🔍","Heirloom discovered",`You found a ${name.toLowerCase()} worth approximately ${cash(value)}.`);
+ }else if(type==="sellheirloom"){
+  const item=w.inventory.splice(Number(amount),1)[0];if(!item)return;S.money+=item.value;worldNotify("💎","Collectible sold",`You sold ${item.name} for ${cash(item.value)}.`);
+ }else if(type==="luxury"){
+  const item=worldLuxury.find(q=>q.id===amount);if(!item||!worldSpend(item.price))return;
+  w.inventory.push({name:item.name,value:item.price,icon:item.icon});worldNotify(item.icon,"Luxury purchase",`You bought ${item.name} for ${cash(item.price)}.`,10);
+ }else if(type==="foundgroup"){
+  if(!worldSpend(3000))return;w.cult=Math.max(w.cult,1);w.followersCult+=rand(3,15);worldNotify("🕯️","Community founded","You started a philosophical community.",8);
+ }else if(type==="growgroup"){
+  if(!w.cult)return;if(!worldSpend(900))return;w.cult+=rand(2,7);w.followersCult+=rand(12,80);worldNotify("🤲","Community grows",`${w.followersCult} members now participate in your community.`,5);
+ }
+ save();render();
+};
+const worldHealthAction=function worldHealthAction(type){
+ const w=ensureWorld();if(!S.alive)return;
+ if(type==="checkup"){
+  if(!worldSpend(300))return;
+  if(!w.conditions.length&&Math.random()<.22)w.conditions.push(pick(["Seasonal allergies","Chronic fatigue","Back pain"]));
+  worldNotify("🩺","Health checkup",w.conditions.length?"Your doctor found: "+w.conditions.join(", ")+".":"Your health checks look good.",3);
+ }else if(type==="treat"){
+  if(!w.conditions.length)return notice("No current conditions.",true);
+  if(!worldSpend(800))return;
+  const condition=w.conditions.shift();stat("health",rand(5,14));worldNotify("💊","Condition treated",`You received treatment for ${condition}.`,8);
+ }else if(type==="meditate"){extraStat("stress",-rand(12,23));w.vitality=clamp(w.vitality+rand(3,8));worldNotify("🧘","Mindfulness","You took time to unwind and reflect.",8);}
+ else if(type==="diet"){stat("health",rand(4,8));w.vitality=clamp(w.vitality+rand(4,10));worldNotify("🥗","Healthy habits","Your new nutrition plan improved your wellbeing.",4);}
+ save();render();
+};
+const oldWorldAge=ageUp;
+ageUp=function(){if(!S||!S.alive||eventModal)return;const a=S.age;oldWorldAge();if(S&&S.alive&&S.age>a)worldYear();};
+S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
 </script>
