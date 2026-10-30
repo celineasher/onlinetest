@@ -541,6 +541,7 @@ const enhancedAge=function enhancedAge(){
  enhancedAge._base();
  if(!S.alive)return;
  const x=S.extras;
+ if(!wasWorking&&S.age>=18){const support=Math.round((8500+S.children*2800)*.64);S.money+=support;if(S.age===18){S.money+=3000;log('🎁','A head start','Your family gave you $3,000 to begin adult life.');}if(S.age===19||S.age%5===0)log('🤝','Keeping afloat',`You received ${cash(support)} in living support.`);}
  x.stress=clamp(x.stress+rand(-5,7)+(workedHard?7:0)+(S.money<0?4:0));
  if(wasWorking){
   x.yearsWorked++;
@@ -789,6 +790,171 @@ const extendedClick=function extendedClick(e){
 };
 $('#app').addEventListener('click',extendedClick,true);
 document.title='LifePath Reforged — Live Your Story';
+/* LIFEPATH DYNAMIC EVENTS V3 */
+const expandedRandomEvent=function expandedRandomEvent(){
+ enhanceInit();
+ const ev=[];
+ const add=(icon,title,text,choices)=>ev.push({icon,title,text,choices});
+ const op=(text,fn)=>({text,fn});
+ if(S.age<=5){
+  add("🎨","A Colorful Discovery","Your teacher notices your imagination during art time.",[
+   op("Paint a masterpiece",()=>{extraStat("creativity",9);stat("happiness",5);log("🎨","A little artist","You made a colorful painting.")}),
+   op("Play with your friends",()=>{stat("happiness",8);log("🧸","Playtime","You had a wonderful day with friends.")}),
+   op("Show it to your parents",()=>{S.people.slice(0,2).forEach(p=>p.closeness=clamp(p.closeness+8));log("❤️","Family pride","Your family loved your art.")})
+  ]);
+  add("🐻","Your Favorite Toy","Your favorite stuffed toy goes missing at home.",[
+   op("Search everywhere",()=>{if(Math.random()<.75){stat("happiness",8);log("🐻","Found it!","You discovered your toy behind the sofa.")}else{stat("happiness",-5);log("🧸","Still missing","You couldn't find your toy.")}}),
+   op("Ask for help",()=>{S.people.filter(p=>p.alive).slice(0,2).forEach(p=>p.closeness=clamp(p.closeness+5));log("👪","Help from family","Everyone searched together.")}),
+   op("Find a new favorite",()=>{stat("happiness",3);log("🪁","New adventures","You found something else to enjoy.")})
+  ]);
+ }
+ if(S.age>=6&&S.age<=17){
+  add("📚","The Science Fair","Your class is holding a science fair. You have a week to prepare.",[
+   op("Build an ambitious project",()=>{stat("smarts",rand(5,10));extraStat("stress",5);log("🔬","Science fair","You worked hard on an impressive project.")}),
+   op("Team up with a classmate",()=>{stat("smarts",4);stat("happiness",6);log("🤝","Team effort","You built something amazing together.")}),
+   op("Skip the competition",()=>{stat("happiness",3);extraStat("reputation",-3);log("🏫","No competition","You decided not to take part.")})
+  ]);
+  add("🎭","School Talent Show","The talent show is this Friday. Your friends dare you to perform.",[
+   op("Sing on stage",()=>{extraStat("creativity",8);extraStat("reputation",6);stat("happiness",6);log("🎤","A brave performance","The crowd applauded your performance!")}),
+   op("Join backstage crew",()=>{extraStat("reputation",5);stat("smarts",3);log("🎬","Behind the scenes","You helped make the show a success.")}),
+   op("Stay in the audience",()=>{stat("happiness",3);log("👏","Cheering friends","You had fun watching the performances.")})
+  ]);
+  add("🧑‍🏫","A Tough Teacher","Your teacher thinks you aren't applying yourself.",[
+   op("Study twice as hard",()=>{stat("smarts",9);extraStat("stress",7);log("📖","Extra lessons","You worked hard and improved your grades.")}),
+   op("Ask for extra help",()=>{stat("smarts",6);extraStat("reputation",3);log("✍️","Mentorship","Your teacher helped you understand difficult topics.")}),
+   op("Ignore the feedback",()=>{stat("smarts",-3);stat("happiness",2);log("🙄","No changes","You shrugged it off.")})
+  ]);
+  add("🤝","A New Student","A new student is sitting alone at lunchtime.",[
+   op("Invite them to join you",()=>{const p=makePerson("Friend",S.age);S.people.push(p);stat("happiness",5);extraStat("reputation",5);log("🤝","A new friend",`You became friends with ${p.name}.`)}),
+   op("Wave and say hello",()=>{extraStat("reputation",3);log("👋","A friendly gesture","You made someone feel welcome.")}),
+   op("Go about your day",()=>{log("🥪","Lunch break","You spent the lunch break with your usual group.")})
+  ]);
+ }
+ if(S.age>=13){
+  add("📱","A Viral Post","A funny video you posted unexpectedly starts getting views.",[
+   op("Keep posting every day",()=>{extraStat("creativity",6);extraStat("reputation",rand(-3,10));stat("happiness",4);log("📱","Going viral","Your post spread across social media.")}),
+   op("Turn it into an opportunity",()=>{const earned=rand(250,2200);S.money+=earned;extraStat("stress",4);log("💸","Creator income",`You earned ${cash(earned)} from your videos.`)}),
+   op("Delete the post",()=>{extraStat("stress",-7);log("🔕","Offline time","You decided not to chase online attention.")})
+  ]);
+ }
+ if(S.age>=18){
+  add("🏠","Your First Place","A friend suggests moving into a shared apartment.",[
+   op("Move in and pay $1,200",()=>{S.money-=1200;stat("happiness",9);extraStat("stress",-4);log("🏠","New place","You moved into a shared apartment.")}),
+   op("Stay where you are",()=>{S.money+=500;stat("happiness",-2);log("💰","Staying put","You decided to save money for now.")}),
+   op("Search for a better option",()=>{extraStat("reputation",3);log("🗺️","Exploring neighborhoods","You learned more about the housing market.")})
+  ]);
+  add("📦","A Forgotten Box","You discover a box of old collectibles in the attic.",[
+   op("Sell them online",()=>{const earned=rand(300,2800);S.money+=earned;log("📦","Hidden value",`You sold collectibles for ${cash(earned)}.`)}),
+   op("Keep them for nostalgia",()=>{stat("happiness",7);log("📷","Memories","You kept the old treasures.")}),
+   op("Donate them",()=>{extraStat("reputation",7);stat("happiness",5);log("🤲","Sharing joy","You donated them to a community center.")})
+  ]);
+  add("🎟️","A Weekend Festival","Friends invite you to a local music festival.",[
+   op("Buy VIP tickets for $500",()=>{S.money-=500;stat("happiness",13);log("🎵","Festival memories","You had an unforgettable weekend.")}),
+   op("Buy standard tickets for $90",()=>{S.money-=90;stat("happiness",8);log("🎵","Live music","You sang along with your favorite songs.")}),
+   op("Save your money",()=>{extraStat("stress",-3);log("🏠","A restful weekend","You enjoyed a peaceful weekend at home.")})
+  ]);
+  add("🧑‍🎨","Creative Opportunity","A local studio offers to show your work at an exhibition.",[
+   op("Accept the exhibition",()=>{extraStat("creativity",12);extraStat("reputation",8);log("🎨","First exhibition","People appreciated your creative work.")}),
+   op("Sell your work privately",()=>{const earned=rand(400,3400);S.money+=earned;extraStat("creativity",5);log("💵","Art sale",`You sold your work for ${cash(earned)}.`)}),
+   op("Keep practicing",()=>{extraStat("creativity",8);extraStat("stress",-4);log("🖌️","Practice makes progress","You refined your craft.")})
+  ]);
+  add("🍔","A Food Challenge","Your friend invites you to compete in a local cooking contest.",[
+   op("Compete seriously",()=>{if(Math.random()<.55){S.money+=2000;extraStat("reputation",7);log("🏆","Cooking champion","You won a $2,000 prize!")}else{stat("happiness",3);log("🍳","A delicious try","You didn't win, but had fun.")}}),
+   op("Team up with a friend",()=>{stat("happiness",8);extraStat("creativity",5);log("👨‍🍳","Kitchen teamwork","You cooked together and made a great meal.")}),
+   op("Just taste the food",()=>{stat("happiness",4);log("😋","Food tasting","You enjoyed the delicious entries.")})
+  ]);
+  add("🚴","A Fitness Goal","A friend challenges you to complete a month-long fitness challenge.",[
+   op("Commit fully",()=>{stat("health",13);stat("looks",5);extraStat("stress",4);log("🚴","Fitness milestone","You finished the challenge feeling stronger.")}),
+   op("Take it at your own pace",()=>{stat("health",7);stat("happiness",5);log("🚶","A healthy routine","You found a workout routine that works for you.")}),
+   op("Sit this one out",()=>{stat("happiness",2);log("🛋️","Rest day","You chose to relax instead.")})
+  ]);
+  add("💌","An Anonymous Compliment","Someone sends you a sweet anonymous note.",[
+   op("Try to find who wrote it",()=>{stat("happiness",5);extraStat("reputation",3);log("💌","A little mystery","You never quite figured out who sent the note.")}),
+   op("Keep it close",()=>{stat("happiness",9);log("💛","Small kindness","The note brightened your whole week.")}),
+   op("Laugh it off",()=>{log("💌","No big deal","You smiled and went on with your day.")})
+  ]);
+ }
+ if(S.age>=20){
+  add("📉","An Expensive Mistake","You realize you paid too much for an online purchase.",[
+   op("Ask for a refund",()=>{if(Math.random()<.7){S.money+=600;log("📦","Refund approved","Customer support returned $600.")}else{extraStat("stress",6);log("📧","No refund","Customer service denied your request.")}}),
+   op("Resell it",()=>{S.money+=400;log("🛒","Second-hand sale","You recovered $400 selling the item.")}),
+   op("Keep it",()=>{stat("happiness",4);log("🎁","Treat yourself","At least you got something you like.")})
+  ]);
+ }
+ if(S.job){
+  add("💼","A Challenging Project","Your manager needs someone to lead an important project.",[
+   op("Volunteer to lead",()=>{extraStat("careerPerformance",15);extraStat("stress",12);extraStat("reputation",5);log("⭐","Stepping up","You took on more responsibility at work.")}),
+   op("Help your teammates",()=>{extraStat("careerPerformance",8);stat("happiness",3);log("🤝","Team effort","You helped your team deliver great work.")}),
+   op("Keep a low profile",()=>{extraStat("stress",-4);extraStat("careerPerformance",-3);log("💼","Ordinary week","You stuck to your usual responsibilities.")})
+  ]);
+  add("☕","Office Drama","Two coworkers have a disagreement and ask you to take sides.",[
+   op("Mediate calmly",()=>{extraStat("reputation",6);extraStat("careerPerformance",7);log("🕊️","The peacemaker","You helped resolve the disagreement.")}),
+   op("Support a friend",()=>{extraStat("reputation",rand(-6,5));stat("happiness",3);log("🗣️","Picking a side","Your decision sparked more office gossip.")}),
+   op("Stay neutral",()=>{extraStat("stress",-4);log("☕","Staying out of it","You avoided the workplace drama.")})
+  ]);
+ }
+ if(S.people.some(p=>p.type==="Partner"&&p.alive)){
+  const loved=S.people.find(p=>p.type==="Partner"&&p.alive);
+  add("❤️","Date Night Plans",`${loved.name} wants to spend some quality time with you this weekend.`,[
+   op("Plan a special night out ($300)",()=>{S.money-=300;loved.closeness=clamp(loved.closeness+15);stat("happiness",8);log("💘","A romantic evening",`You had a wonderful evening with ${loved.name}.`)}),
+   op("Cook dinner together",()=>{loved.closeness=clamp(loved.closeness+10);stat("happiness",5);log("🍝","Dinner at home",`You and ${loved.name} cooked together.`)}),
+   op("Ask to reschedule",()=>{loved.closeness=clamp(loved.closeness-8);extraStat("stress",-3);log("📅","A rain check",`${loved.name} was disappointed.`)})
+  ]);
+ }
+ if(S.children>0){
+  add("🧒","Family Weekend","Your children ask you to take them on an outing.",[
+   op("Visit an amusement park ($800)",()=>{S.money-=800;stat("happiness",12);S.people.filter(p=>p.type==="Child").forEach(p=>p.closeness=clamp(p.closeness+12));log("🎡","A day to remember","You spent a fantastic day with your family.")}),
+   op("Have a picnic",()=>{stat("happiness",8);S.people.filter(p=>p.type==="Child").forEach(p=>p.closeness=clamp(p.closeness+8));log("🧺","Family picnic","You made wonderful memories together.")}),
+   op("You are too busy",()=>{S.people.filter(p=>p.type==="Child").forEach(p=>p.closeness=clamp(p.closeness-10));log("📅","Too busy","You had to cancel the family outing.")})
+  ]);
+ }
+ if(S.extras.pets.length){
+  const pet=pick(S.extras.pets);
+  add("🐾","A Mischievous Pet",`${pet.name} gets into trouble while you're away from home.`,[
+   op("Take them to the vet ($250)",()=>{S.money-=250;stat("happiness",6);log("🐾","Pet care",`${pet.name} is safe and healthy.`)}),
+   op("Stay home and watch them",()=>{stat("happiness",5);extraStat("stress",-5);log("🏠","Staying in",`You spent the day caring for ${pet.name}.`)}),
+   op("Ask a friend for help",()=>{extraStat("reputation",2);log("🤝","A helping hand",`A friend looked after ${pet.name}.`)})
+  ]);
+ }
+ if(S.extras.stress>=60){
+  add("😓","Burning Out","You're feeling overwhelmed and need some time to recharge.",[
+   op("Take a mental health day",()=>{extraStat("stress",-22);stat("happiness",9);log("🧘","Rest and reset","You gave yourself permission to rest.")}),
+   op("Talk to someone you trust",()=>{extraStat("stress",-14);stat("happiness",6);log("💬","A comforting talk","A heartfelt conversation helped.")}),
+   op("Push through the stress",()=>{extraStat("stress",10);stat("health",-7);log("😞","Working too hard","You kept going without a break.")})
+  ]);
+ }
+ if(S.money<0&&S.age>=18){
+  add("💸","A Helping Hand","You're struggling financially. A community program offers assistance.",[
+   op("Apply for support",()=>{const amount=rand(900,4000);S.money+=amount;extraStat("stress",-7);log("💵","Financial support",`You received ${cash(amount)} in support.`)}),
+   op("Work extra shifts",()=>{const amount=rand(1200,3500);S.money+=amount;extraStat("stress",10);log("🧰","Extra shifts",`You earned ${cash(amount)}.`)}),
+   op("Make a budget",()=>{extraStat("stress",-4);stat("smarts",3);log("📝","Making a plan","You made a plan to improve your finances.")})
+  ]);
+ }
+ if(S.money>=25000&&S.age>=18){
+  add("💰","A Surprise Opportunity","An old acquaintance offers you a chance to fund a small venture.",[
+   op("Invest $5,000 in the venture",()=>{S.money-=5000;if(Math.random()<.6){S.money+=rand(6500,13000);log("📈","Venture success","Your investment paid off!")}else{extraStat("stress",8);log("📉","Risky business","The venture didn't work out.")}}),
+   op("Ask for more information",()=>{stat("smarts",3);log("🔎","Due diligence","You decided to research before investing.")}),
+   op("Decline politely",()=>{extraStat("stress",-3);log("💵","Staying cautious","You decided your savings were best left alone.")})
+  ]);
+ }
+ if(S.age>=45){
+  add("🩺","Annual Checkup","Your doctor suggests paying closer attention to your health.",[
+   op("Follow a healthy plan",()=>{stat("health",13);extraStat("stress",-6);log("🫀","Healthy habits","You started a healthier daily routine.")}),
+   op("Get a second opinion ($500)",()=>{S.money-=500;stat("health",8);log("👩‍⚕️","A specialist visit","You got helpful advice from a specialist.")}),
+   op("Ignore the warning",()=>{stat("health",-8);log("🍔","Not now","You decided not to change your habits.")})
+  ]);
+ }
+ if(S.age>=65){
+  add("🌅","Your Legacy","You reflect on the people you have influenced over the years.",[
+   op("Share your stories",()=>{stat("happiness",12);S.people.filter(p=>p.alive).forEach(p=>p.closeness=clamp(p.closeness+8));log("📖","Stories to tell","You shared your life lessons with loved ones.")}),
+   op("Write your memoir",()=>{extraStat("creativity",12);stat("happiness",7);log("✍️","Your memoir","You began recording your story.")}),
+   op("Explore a new passion",()=>{stat("smarts",4);stat("happiness",10);log("🎨","Never too late","You took up a new hobby.")})
+  ]);
+ }
+ if(!ev.length)return expandedRandomEvent._base();
+ return Math.random()<.13?expandedRandomEvent._base():pick(ev);
+};
+expandedRandomEvent._base=randomEvent;randomEvent=expandedRandomEvent;
 S=load();enhanceInit();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
