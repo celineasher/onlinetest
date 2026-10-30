@@ -1,0 +1,83 @@
+/* LifePath Classic 2 — original visual treatment for a mobile life simulator */
+:root{--ink:#08558f;--navy:#075697;--electric:#00a52a;--cream:#fff7dc;--row-divider:#7a9ab2}
+html,body{overflow:hidden}
+body{background:#dce4e9;color:#114c79;font-family:"Trebuchet MS",Arial,system-ui,sans-serif}
+#app{min-height:0;place-items:stretch;background:#dce4e9}
+.shell{width:100%;max-width:500px;height:100dvh;min-height:0;max-height:none;margin:0 auto;border:0;border-radius:0;box-shadow:0 14px 50px #24476733}
+.game-header{background:#090a0a!important;color:#fff;min-height:82px;padding:12px 17px;border:0}
+.header-icon{width:43px!important;height:43px!important;display:grid;place-items:center;border:2px solid #fff!important;border-radius:50%!important;background:transparent!important;color:white!important;font-size:23px!important}
+.brand{font-family:Impact,"Arial Black",system-ui,sans-serif;letter-spacing:.25px!important;font-size:30px!important;color:#f36e28!important;text-shadow:none!important}
+.brand-icon{background:#fff!important;border-radius:50%;width:39px;height:39px;display:grid;place-items:center;color:#111;font-family:system-ui,sans-serif;font-size:23px!important;margin-right:3px;filter:none!important}
+.header-world-btn{background:#202425!important;color:#fff!important;border:1px solid #666!important;border-radius:9px!important;padding:7px 10px!important}
+.character-strip{min-height:90px!important;padding:12px 12px!important;background-color:#fff8dc!important;background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='31' height='31' viewBox='0 0 31 31'%3E%3Cpath fill='%23f6e6ac' d='M15.5 1l3.2 9.3h9.8l-7.9 5.8 3.1 9.3-8.2-5.7-8.2 5.7 3.1-9.3-7.9-5.8h9.8Z'/%3E%3C/svg%3E")!important;border-bottom:1px solid #dfcfa2!important;gap:9px!important}
+.character-portrait{width:60px!important;height:60px!important;border-radius:50%!important;border:0!important;background:#fff0c7!important;font-size:41px!important}
+.character-detail strong{font-size:15px!important;color:#005994!important;text-decoration:underline!important;text-underline-offset:2px;white-space:nowrap}
+.character-detail .secondary{font-size:12px!important;color:#186f9f!important}
+.money-detail strong{color:#2e9d3e!important;font-size:clamp(13px,4.4vw,23px)!important;font-weight:1000;white-space:nowrap}
+.money-detail small{color:#276d9e!important;font-size:10px!important}
+.app-main{background:#e5ebf0!important;scrollbar-color:#bad0dc transparent}
+.app-main.is-life{background:white!important}
+.subpage{padding:0!important;min-height:100%;background:#e5ebf0}
+.subhead{min-height:69px!important;position:sticky;top:0;z-index:6;display:flex!important;justify-content:center;align-items:center;background:#075898!important;color:white!important;text-transform:uppercase;font-family:Impact,"Arial Black",system-ui,sans-serif;font-weight:900!important;font-size:24px!important;letter-spacing:1px!important;border:0!important;padding:12px 52px!important;text-align:center}
+.back-button{position:absolute;left:13px;top:50%;transform:translateY(-50%);display:grid!important;place-items:center;width:43px!important;height:43px!important;color:#fff!important;border:2px solid #fff!important;background:transparent!important;border-radius:50%!important;font-family:system-ui;font-weight:700!important;font-size:33px!important}
+.lp-list{background:#fff}
+.lp-section{display:block;background:#7d7d80;color:#fff;font-weight:900;text-align:center;letter-spacing:.25px;font-size:13px;padding:7px 10px;text-transform:uppercase}
+.lp-row{appearance:none;display:flex;align-items:center;gap:13px;width:100%;min-height:86px;padding:13px 16px;border:0;border-bottom:1px solid #8397aa;background:#fff;text-align:left;cursor:pointer;touch-action:manipulation}
+.lp-row:hover:not(:disabled){background:#eef7ff}
+.lp-row:active:not(:disabled){background:#dcefff}
+.lp-row:disabled{opacity:.48;cursor:not-allowed}
+.lp-row-icon{width:44px;height:44px;flex:none;display:grid;place-items:center;font-size:33px}
+.lp-row-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.lp-row-name{font-size:clamp(15px,4.5vw,20px);font-weight:900;line-height:1.2;color:#065a9c}
+.lp-row-description{font-size:clamp(11px,3.5vw,14px);line-height:1.4;color:#1367a4}
+.lp-row-arrow{font-family:Arial,system-ui;font-size:38px;line-height:1;color:#285f85;font-weight:400;flex:none;margin-right:1px}
+.lp-row.lp-feature{background:#fffdf4}
+.lp-detail{background:#fff;min-height:100%;padding-bottom:20px}
+.lp-summary{padding:17px;background:linear-gradient(#f7fcff,#e7f3fb);border-bottom:1px solid #a7c0d2;color:#175a87;font-size:13px}
+.lp-summary h2{margin:0 0 5px;font-size:20px;color:#075a99}
+.lp-summary p{margin:0;color:#4781a7}
+.lp-detail .card{border-bottom:4px solid #e5ebf0!important}
+.lp-inline-actions{display:flex;flex-wrap:wrap;gap:8px;padding:16px}
+.lp-inline-actions .btn{min-height:38px}
+.lp-info{padding:14px 17px;color:#395e75;font-size:13px;line-height:1.6;border-bottom:1px solid #d7e3eb}
+.lp-info strong{color:#075a99}
+.lp-footnote{font-size:11px;color:#6b8498;padding:9px 16px}
+.lp-career-top{display:flex;align-items:center;gap:14px;padding:18px 16px;background:#f6fafc}
+.lp-career-top>span{font-size:49px}
+.lp-career-top h2{font-size:20px;color:#04598e;margin:0}
+.lp-career-top p{font-size:12px;color:#387197;margin:5px 0 0}
+.lp-career-menu .lp-row{min-height:83px}
+.lp-subnav{padding:12px 14px 0;background:#e5ebf0}
+.lp-subnav button{font-weight:900;color:#075a99;background:#fff;border:1px solid #aac3d6;padding:9px 13px;border-radius:9px}
+.world-wrap{background:#e5ebf0!important;padding:0!important;gap:0!important}
+.world-heading{background:#777!important;text-align:center;padding:9px 12px!important}
+.world-heading h2{color:#fff!important;font-size:15px!important;letter-spacing:.5px;text-transform:uppercase;margin:0!important}
+.world-heading p{color:#eee!important}
+.world-grid{gap:0!important}
+.world-entry{width:100%;border:0!important;border-bottom:1px solid #849caf!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;min-height:79px!important}
+.world-entry-icon{background:transparent!important;font-size:29px!important}
+.world-entry-copy strong{font-size:17px!important;color:#075a99!important}
+.world-entry-copy small{font-size:11px!important;color:#126da5!important}
+.world-chevron{font-size:34px!important;color:#285f85!important}
+.world-panel{border-radius:0!important;margin:0!important;box-shadow:none!important}
+.world-feature{border-radius:0!important;margin:0!important;box-shadow:none!important}
+.world-panel h3{color:#075a99!important}
+.card{border-radius:0!important}
+.promo-strip{background:#fff2d0!important}
+.promo-world-btn{border-radius:999px}
+.bottom-nav{background:#075697!important;border-top:0!important;height:83px!important}
+.nav-button{color:#fff!important;border-right:1px solid #094476!important}
+.nav-button .nav-emoji{background:#00c4c8!important;border-radius:50%!important;display:grid!important;place-items:center!important;width:39px;height:39px;line-height:1!important;font-size:22px!important;filter:none!important}
+.nav-label{font-size:10px!important;font-weight:700!important;letter-spacing:-.1px!important}
+.nav-age{z-index:10}
+.age-button{width:98px!important;height:98px!important;background:#00a82d!important;border:5px solid #fff!important;color:#fff!important;box-shadow:0 2px 8px #263f4e77!important;transform:translateY(-19px)!important}
+.age-button .plus-symbol{font-size:42px!important}
+.age-button .button-word{font-size:16px!important}
+.stats-dock{background-color:#fff8dc!important;background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='31' height='31'%3E%3Cpath fill='%23f7e7b5' d='M15.5 1l3.2 9.3h9.8l-7.9 5.8 3.1 9.3-8.2-5.7-8.2 5.7 3.1-9.3-7.9-5.8h9.8Z'/%3E%3C/svg%3E")!important;border-top:1px solid #f1dfad!important;padding:11px 16px!important}
+.stat-top .stat-label{color:#045d9e!important}
+.timeline-year{color:#045e9f!important}
+.timeline-entry{font-size:13.5px!important;line-height:1.38!important;color:#69727c!important}
+.menu-panel{top:82px!important;overflow-y:auto!important;padding-bottom:18px!important}
+.menu-panel button{flex:none!important}
+@media(max-width:365px){.game-header{min-height:68px}.character-portrait{width:47px!important;height:47px!important;font-size:31px!important}.lp-row{padding:11px 12px}.lp-row-icon{width:36px;font-size:27px}.lp-row-name{font-size:15px}.lp-row-description{font-size:11px}.age-button{width:85px!important;height:85px!important}.nav-label{font-size:8px!important}}
+@media(min-width:700px){.shell{margin:0 auto;height:min(100dvh,950px);box-shadow:0 18px 70px #193d5770}.lp-row-name{font-size:19px}}
