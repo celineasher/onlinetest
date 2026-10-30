@@ -1,0 +1,19 @@
+/* LifePath classic mobile UI */
+:root{--green:#00a82e;--greenDark:#008d25;--blue:#075a99;--ink:#075a99;--muted:#527a9c;--bg:#e4ebf0;--line:#9badbe}
+body{background:#e4ebf0;color:#075a99;font-family:Arial,Helvetica,sans-serif}
+#app{place-items:stretch}.shell{width:100%;max-width:540px;height:100dvh;min-height:0;margin:auto;border:0;border-radius:0;box-shadow:none}
+.game-header{background:#050505!important;color:#fff;min-height:84px;padding:12px 15px;border:0}
+.brand{color:#f36620!important;font-size:29px;font-weight:1000;letter-spacing:-1px}.brand-icon{background:#fff;border-radius:50%;padding:6px;font-size:24px;margin-right:8px}
+.header-icon{border:2px solid #fff!important;color:#fff!important;background:transparent!important;border-radius:50%!important;width:44px;height:44px;font-size:24px}
+.character-strip{background-color:#fff9e8!important;background-image:radial-gradient(circle,#f7e6b6 17%,transparent 19%)!important;background-size:23px 23px!important;border-bottom:2px solid #e9dcb4;min-height:88px;padding:10px}
+.character-detail strong{font-size:15px;color:#005c9d}.character-detail .secondary{color:#176b9c}.money-detail strong{color:#279f3b!important;font-size:22px}.money-detail small{color:#2871a0}
+.app-main{background:#e4ebf0}.app-main.is-life{background:#fff}.subpage{background:#e4ebf0;min-height:100%}
+.subhead{background:#075692!important;color:white!important;text-transform:uppercase;font-weight:1000;letter-spacing:.6px;text-align:center;font-size:22px;padding:15px 12px;min-height:70px}
+.back-button{border:2px solid #fff!important;border-radius:50%!important;color:#fff!important;background:transparent!important}
+.world-wrap{padding:0!important;background:#e4ebf0!important}.world-heading{background:#777!important;color:#fff!important;padding:9px 16px;text-align:center}.world-heading h2{color:#fff!important;font-size:17px!important;text-transform:uppercase}.world-heading p{color:#f7f7f7!important;font-size:11px}
+.world-grid,.world-panel,.world-summary{background:#fff!important}.world-entry,.world-action,.world-job{border:0!important;border-bottom:1px solid #8ca1b5!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;padding:16px 18px!important;min-height:77px!important}
+.world-entry-icon,.world-action>span:first-child{font-size:29px!important;background:transparent!important}.world-entry-copy strong,.world-action strong{font-size:19px!important;color:#075692!important;font-weight:850}.world-entry-copy small,.world-action small{color:#19679d!important;font-size:13px!important}.world-chevron{color:#34688f!important;font-size:33px!important}
+.world-feature{margin:0!important;border-radius:0!important}.world-panel{margin:0!important;border-radius:0!important;border-bottom:1px solid #8295a5!important}.world-panel h3{background:#777!important;color:#fff!important;text-align:center;text-transform:uppercase;padding:8px;margin:0 -1px 6px}
+.play-footer{background:#075692!important;border-top:2px solid #084878!important}.play-footer button{color:#fff!important}.age-button{background:#00a32a!important;color:#fff!important;border:5px solid #fff!important;box-shadow:0 2px 8px #3338!important}
+.menu-panel{max-height:calc(100dvh - 180px);overflow:auto}
+@media(max-width:480px){.game-header{min-height:75px}.character-strip{min-height:82px}.world-entry{min-height:74px!important}.world-entry-copy strong{font-size:17px!important}}
