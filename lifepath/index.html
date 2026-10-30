@@ -1312,7 +1312,7 @@ const worldsHub=function worldsHub(){
  <div><span>AGE</span><strong>${S.age}</strong></div><div><span>NET WORTH</span><strong>${cash(wealth()+w.crypto+w.bonds)}</strong></div><div><span>GENERATIONS</span><strong>${w.generations}</strong></div>
  </div></div>`;
 };
-const worldsCareers=function worldsCareers(){
+let worldsCareers=function worldsCareers(){
  const w=ensureWorld(), active=getCareer(),c=w.special;
  return `<div class="world-wrap">${wTitle("Special Careers","Build mastery and climb the ranks. Each career is playable.")}
  ${active?`<div class="world-feature"><div>${active.icon}</div><section><strong>${active.name}</strong><p>Level ${c.level+1} · ${cash(active.base*(1+c.level*.4)+c.contract)} estimated annual earnings</p><small>${c.years} years · ${c.awards} honors</small></section></div>
@@ -1348,7 +1348,7 @@ const worldsLandlord=function worldsLandlord(){
  ${owned.length?owned.map(a=>{const idx=S.assets.indexOf(a);return `<div class="world-estate"><strong>🏠 ${esc(a.name)}</strong><small>Value ${cash(a.value??a.cost)} · ${a.tenant?`Tenant pays ${cash(a.rent)}/month`:"Currently vacant"}</small><div class="extra-actions"><button class="btn primary" data-estate="${a.tenant?"evict":"rent"}" data-index="${idx}">${a.tenant?"End tenancy":"Find tenant"}</button><button class="btn" data-estate="renovate" data-index="${idx}">Renovate</button><button class="btn danger" data-sell="${idx}">Sell</button></div></div>`}).join(""):'<div class="world-empty">No properties yet. Purchase your first home in Assets & Finances.</div>'}
  <button class="large-cta" data-goto="finances">🏦 Browse houses in Assets & Finances ›</button></div></div>`;
 };
-const worldsPortfolio=function worldsPortfolio(){
+let worldsPortfolio=function worldsPortfolio(){
  const w=ensureWorld();
  return `<div class="world-wrap">${wTitle("Investments & Luxury","Explore markets, collectible items, and expensive dreams.")}
  <div class="world-panel"><h3>Alternative investments</h3><div class="world-stats"><div><b>${cash(w.crypto)}</b><small>Digital assets</small></div><div><b>${cash(w.bonds)}</b><small>Government bonds</small></div><div><b>${cash(S.extras.invested)}</b><small>Index fund</small></div></div>
