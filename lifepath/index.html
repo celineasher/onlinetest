@@ -338,6 +338,7 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 
 .menu-panel{overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px;scrollbar-width:thin}.menu-panel button{flex-shrink:0}.world-special-banner{background:linear-gradient(110deg,#dff6f6,#fff4dc);border:1px solid #d6edf1;padding:11px 13px;border-radius:10px;color:#1d6681;font-weight:800;font-size:11px;margin:7px 0}.world-panel .world-stats{margin-bottom:8px}.world-heir{width:100%}.world-action:active:not(:disabled){transform:scale(.98)}
 .origin-panel{background:#eef6fd;border:1px solid #d8eaf6;border-radius:10px;padding:11px;margin:10px 0}.origin-panel small{font-weight:750;color:#48718d;font-size:10px}.origin-panel select{width:100%;margin-top:7px;padding:10px;border-radius:7px;border:1px solid #c6dce9;background:white;font-weight:800;color:#215979;font-size:12px}.editor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.editor-stat{border:1px solid #dfeaf2;border-radius:9px;padding:10px;background:#f7fbfd}.editor-stat>strong{display:block;color:#215a79;text-transform:capitalize;font-size:11px}.editor-stat>small{display:block;color:#6d96a8;margin:4px 0}.editor-stat button{font-size:12px;border:1px solid #c4dce8;background:#fff;color:#226185;padding:5px 13px;border-radius:7px;margin-right:5px;cursor:pointer}
+.world-panel .world-jobs+.world-muted{margin-top:11px}.world-panel .large-cta{margin-top:13px}
 </style>
 </head>
 <body>
@@ -1453,7 +1454,7 @@ const worldRender=function worldRender(){
  }
  const main=document.querySelector(".subpage");
  if(worldTabs.includes(tab)&&main){
-  const layouts={worlds:worldsHub,special:worldsCareers,fame:worldsFame,crime:worldsCrime,landlord:worldsLandlord,portfolio:worldsPortfolio,wellness:worldsWellness,creative:worldsCreative,community:worldsCommunity,legacy:worldsLegacy,youth:worldsYouth};
+  const layouts={worlds:worldsHub,special:worldsCareers,fame:worldsFame,crime:worldsCrime,landlord:worldsLandlord,portfolio:worldsPortfolio,wellness:worldsWellness,creative:worldsCreative,community:worldsCommunity,legacy:worldsLegacy,youth:worldsYouth,casino:worldsCasino,zoo:worldsZoo,museum:worldsMuseum,racing:worldsRacing,outdoors:worldsOutdoors};
   main.innerHTML=`<div class="subhead"><button class="back-button" data-goto="worlds" aria-label="Back to Worlds">‹</button>${tab==="worlds"?"Explore Life":worldTitles[tab]}</div>${layouts[tab]()}`;
  }
  const nav=document.querySelector(".menu-panel");
@@ -1685,6 +1686,139 @@ worldYear=function(){const w=ensureYouth();oldWorldYearV4();if(!S.alive)return;i
 const oldWorldUIRender=render;
 render=function(){oldWorldUIRender();if(!S)return;const menu=document.querySelector('.menu-panel .menu-reset');if(menu)menu.insertAdjacentHTML('beforebegin','<button data-goto="youth"><span>🎓</span>School & Youth</button>');if(tab==='profile'){const sub=document.querySelector('.subpage');if(sub){const w=ensureWorld();const names=['health','happiness','smarts','looks','creativity','stress'];sub.insertAdjacentHTML('beforeend','<div class="card"><h2>🎛️ Character Editor</h2><p class="section-intro">Sandbox controls: freely edit your character traits to test different lives.</p><div class="editor-grid">'+names.map(n=>'<div class="editor-stat"><strong>'+n+'</strong><small>'+((S.stats[n]??S.extras[n])||0)+'/100</small><button data-editstat="'+n+'" data-dir="sub">−</button><button data-editstat="'+n+'" data-dir="add">+</button></div>').join('')+'</div></div>');}}if(tab==='portfolio'){const sub=document.querySelector('.subpage');if(sub&&S.age>=18){sub.insertAdjacentHTML('beforeend','<div class="world-panel"><h3>🧰 Income support</h3><p class="world-muted">Short on cash? Work temporary jobs or apply for emergency aid.</p>'+wActions([{icon:'🛠️',name:'Temporary work',detail:'Earn $2,200–$5,500',attr:'data-relief="temp"'},{icon:'🤝',name:'Emergency aid',detail:'Only when unemployed and in debt',attr:'data-relief="aid"',disabled:S.money>0||S.job||getCareer()}])+'</div>');}}};
 $('#app').addEventListener('click',e=>{const el=e.target.closest('button');if(!el)return;const d=el.dataset;if(d.youth){e.stopImmediatePropagation();youthAction(d.youth);}if(d.relief){e.stopImmediatePropagation();reliefAction(d.relief);}if(d.editstat){e.stopImmediatePropagation();editorAction(d.editstat,d.dir);}},true);
+/* LIFEPATH WORLDS V5 EXPANSIONS */
+const extraPacks=function extraPacks(){
+ const w=ensureWorld();if(!w)return;
+ if(!w.casino)w.casino={owned:false,rooms:0,reputation:30,lifetime:0};
+ if(!w.zoo)w.zoo={owned:false,animals:[],welfare:70,visitors:0};
+ if(!w.museum)w.museum={owned:false,exhibits:[],prestige:10,visitors:0};
+ if(!w.racing)w.racing={skill:20,wins:0,losses:0,license:false};
+ if(!w.outdoors)w.outdoors={trips:0,exp:10};
+ return w;
+};
+const worldsCasino=function worldsCasino(){
+ const w=extraPacks(),c=w.casino;
+ return `<div class="world-wrap">${wTitle("Casino Life","An optional fictional casino minigame and business management mode.")}
+ <div class="world-feature"><div>🎰</div><section><strong>${c.owned?"Casino Owner":"Casino Visitor"}</strong><p>${c.owned?`${c.rooms} game rooms · ${c.reputation}/100 reputation`:"Open your own casino and manage game rooms."}</p><small>All play uses fictional LifePath currency only.</small></section></div>
+ <div class="world-panel"><h3>Casino games</h3>${wActions([{icon:"🎰",name:"Spin the wheel",detail:"$100 fictional stake",attr:'data-pack="slot"',disabled:S.age<18||S.money<100},{icon:"🃏",name:"High or Low",detail:"$250 fictional stake",attr:'data-pack="cards"',disabled:S.age<18||S.money<250}])}</div>
+ <div class="world-panel"><h3>Run a casino</h3>${c.owned?`<div class="world-stats"><div><b>${c.rooms}</b><small>Game rooms</small></div><div><b>${c.reputation}%</b><small>Reputation</small></div><div><b>${cash(c.lifetime)}</b><small>Lifetime income</small></div></div>
+ ${wActions([{icon:"🛠️",name:"Build game room",detail:"Cost $18,000",attr:'data-pack="room"',disabled:S.money<18000},{icon:"🎤",name:"Host a show",detail:"$4,000 marketing",attr:'data-pack="show"',disabled:S.money<4000}])}`:
+ `<p class="world-muted">Open a boutique casino for $75,000. Additional rooms and events can increase annual returns.</p><button class="btn primary" data-pack="buycasino" ${S.age<21||S.money<75000?"disabled":""}>Open casino · $75,000</button>`}</div></div>`;
+};
+const worldsZoo=function worldsZoo(){
+ const w=extraPacks(),z=w.zoo;
+ return `<div class="world-wrap">${wTitle("Wildlife Park","Own a wildlife sanctuary, look after animals, and grow attendance.")}
+ <div class="world-feature"><div>🦒</div><section><strong>${z.owned?"Wildlife Park Owner":"Wildlife Explorer"}</strong><p>${z.animals.length} animals · ${z.visitors.toLocaleString()} lifetime visitors</p><small>${z.owned?"Welfare score "+z.welfare+"/100":"Open a park to manage habitats and wildlife."}</small></section></div>
+ <div class="world-panel"><h3>Your wildlife park</h3>
+ ${z.owned?`${wMetric("Animal welfare",z.welfare)}<div class="world-jobs">${z.animals.map(a=>`<div class="world-job"><div class="world-job-icon">${a.icon}</div><div class="world-job-copy"><strong>${a.name}</strong><small>Healthy · ${cash(a.value)} value</small></div></div>`).join("")}</div>
+ ${wActions([{icon:"🐼",name:"Adopt an animal",detail:"$8,000 to $26,000",attr:'data-pack="animal"',disabled:S.money<26000},{icon:"🌿",name:"Improve habitats",detail:"Cost $9,000",attr:'data-pack="habitat"',disabled:S.money<9000},{icon:"🩺",name:"Animal care",detail:"Cost $2,000",attr:'data-pack="care"',disabled:S.money<2000},{icon:"📣",name:"Run a campaign",detail:"Cost $3,000",attr:'data-pack="zooad"',disabled:S.money<3000}])}`:
+ `<p class="world-muted">Opening a sanctuary costs $110,000. Animal welfare and number of attractions affect yearly visitor income.</p><button class="btn primary" data-pack="buyzoo" ${S.age<18||S.money<110000?"disabled":""}>Open wildlife park · $110,000</button>`}
+ </div></div>`;
+};
+const worldsMuseum=function worldsMuseum(){
+ const w=extraPacks(),m=w.museum;
+ return `<div class="world-wrap">${wTitle("Antiques & Museum","Discover rare collectibles and curate a public exhibition.")}
+ <div class="world-feature"><div>🖼️</div><section><strong>${m.owned?"Museum Curator":"Private Collector"}</strong><p>${m.exhibits.length} exhibits · ${w.inventory.length} private collectibles</p><small>${m.owned?`Museum prestige ${m.prestige}/100`:"Collect rare objects before opening your museum."}</small></section></div>
+ <div class="world-panel"><h3>Antique auctions</h3><p class="world-muted">Bid on a mystery collectible. Its real value may be above or below the sale price.</p>
+ ${wActions([{icon:"🧿",name:"Bid at auction",detail:"Spend $5,000",attr:'data-pack="auction"',disabled:S.age<18||S.money<5000},{icon:"🔍",name:"Discover an heirloom",detail:"Find an old treasure",attr:'data-worldfinance="findheirloom"'}])}</div>
+ <div class="world-panel"><h3>Your museum</h3>
+ ${m.owned?`<div class="world-stats"><div><b>${m.exhibits.length}</b><small>Exhibits</small></div><div><b>${m.prestige}%</b><small>Prestige</small></div><div><b>${m.visitors.toLocaleString()}</b><small>Visitors</small></div></div>
+ <div class="world-jobs">${w.inventory.map((a,i)=>`<div class="world-job"><div class="world-job-icon">${a.icon}</div><div class="world-job-copy"><strong>${esc(a.name)}</strong><small>Worth ${cash(a.value)}</small></div><button class="btn primary" data-pack="exhibit" data-index="${i}">DISPLAY</button></div>`).join("")}</div>
+ ${m.exhibits.length?'<p class="world-muted">Exhibits on display: '+m.exhibits.map(x=>esc(x.name)).join(", ")+'</p>':"<p class='world-muted'>Your display rooms are empty.</p>"}
+ <button class="btn" data-pack="renovatemuseum" ${S.money<8500?"disabled":""}>Renovate museum · $8,500</button>`:
+ `<p class="world-muted">A public museum costs $90,000 to establish. Exhibit rare objects and earn admission income each year.</p><button class="btn primary" data-pack="buymuseum" ${S.age<18||S.money<90000?"disabled":""}>Open museum · $90,000</button>`}</div></div>`;
+};
+const worldsRacing=function worldsRacing(){
+ const w=extraPacks(),r=w.racing;
+ const hasCar=S.assets.some(a=>["car","sport"].includes(a.id));
+ return `<div class="world-wrap">${wTitle("Motorsport & Racing","Build your driving skill and compete for race prizes.")}
+ <div class="world-feature"><div>🏎️</div><section><strong>${r.wins} career wins</strong><p>${r.losses} losses · ${r.skill}/100 racing skill</p><small>${r.license?"Licensed racing driver":"Driving test or license required for professional events."}</small></section></div>
+ <div class="world-panel">${wMetric("Racing skill",r.skill)}
+ ${wActions([{icon:"🏁",name:"Driving lesson",detail:"Cost $450",attr:'data-pack="drivetraining"',disabled:S.age<16||S.money<450},{icon:"🚗",name:"Amateur race",detail:"Own a vehicle · Entry $700",attr:'data-pack="race"',disabled:S.age<18||!hasCar||S.money<700},{icon:"🏆",name:"Professional circuit",detail:"Win big · Entry $8,000",attr:'data-pack="grandprix"',disabled:S.age<18||r.skill<55||S.money<8000},{icon:"🧰",name:"Repair your car",detail:"Improve vehicle condition",attr:'data-pack="repair"',disabled:!hasCar||S.money<650}])}</div>
+ <div class="world-panel"><p class="world-muted">To race, purchase a car in Assets & Finances. Professional circuits unlock at skill 55.</p><button class="large-cta" data-goto="finances">🚘 Buy a vehicle ›</button></div></div>`;
+};
+const worldsOutdoors=function worldsOutdoors(){
+ const w=extraPacks(),o=w.outdoors;
+ return `<div class="world-wrap">${wTitle("Outdoor Adventures","Explore forests, discover nature, and build outdoor experience.")}
+ <div class="world-feature"><div>🏕️</div><section><strong>${o.trips} expeditions completed</strong><p>Outdoor skill ${o.exp}/100</p><small>Fresh air and new experiences can improve your health and happiness.</small></section></div>
+ <div class="world-panel">${wMetric("Outdoor skill",o.exp)}
+ ${wActions([{icon:"🥾",name:"Go hiking",detail:"Free adventure",attr:'data-pack="hike"',disabled:S.age<8},{icon:"🏕️",name:"Camping trip",detail:"$500 supplies",attr:'data-pack="camp"',disabled:S.age<10||S.money<500},{icon:"🛶",name:"Kayaking",detail:"$350 equipment",attr:'data-pack="kayak"',disabled:S.age<14||S.money<350},{icon:"🔭",name:"Nature photography",detail:"Practice creativity",attr:'data-pack="photo"',disabled:S.age<10}])}</div></div>`;
+};
+const packsYear=function packsYear(){
+ if(!S||!S.alive)return;
+ const w=extraPacks(),c=w.casino,z=w.zoo,m=w.museum;
+ if(c.owned){
+  const gross=rand(3500,11000)*Math.max(1,c.rooms)*(c.reputation/50);
+  const profit=Math.round(gross-12000);
+  S.money+=profit;c.lifetime+=profit;
+  c.reputation=clamp(c.reputation+rand(-4,4));
+  log("🎰","Casino business",`${profit>=0?"Profit":"Loss"} of ${cash(Math.abs(profit))} from your casino.`);
+ }
+ if(z.owned){
+  z.welfare=clamp(z.welfare-rand(1,5));
+  const visitor=rand(800,3500)*Math.max(1,z.animals.length);
+  z.visitors+=visitor;
+  const profit=Math.round(visitor*rand(5,12)-35000-z.animals.length*5000);
+  S.money+=profit;
+  log("🦒","Wildlife park report",`${visitor.toLocaleString()} visitors brought ${profit<0?"a loss of":"a profit of"} ${cash(Math.abs(profit))}.`);
+  if(z.welfare<35&&z.animals.length){const left=z.animals.pop();log("🦌","Animal welfare",`${left.name} was relocated to a better sanctuary.`);}
+ }
+ if(m.owned){
+  const visitors=rand(500,2000)*Math.max(1,m.exhibits.length);
+  m.visitors+=visitors;
+  const profit=Math.round(visitors*rand(5,12)-18000);S.money+=profit;
+  log("🖼️","Museum report",`Your museum ${profit>=0?"earned":"lost"} ${cash(Math.abs(profit))} this year.`);
+ }
+ save();render();
+};
+const packsAction=function packsAction(a,idx){
+ const w=extraPacks();if(!S||!S.alive||w.prison)return;
+ const c=w.casino,z=w.zoo,m=w.museum,r=w.racing,o=w.outdoors;
+ if(!consume("pack-"+a))return;
+ if(a==="buycasino"){if(S.age<21||c.owned||!worldSpend(75000))return;c.owned=true;c.rooms=1;worldNotify("🎰","Grand opening","Your casino welcomed its first visitors!",11);}
+ else if(a==="room"){if(!c.owned||!worldSpend(18000))return;c.rooms++;worldNotify("🛠️","New game room","You expanded your casino floor.",5);}
+ else if(a==="show"){if(!c.owned||!worldSpend(4000))return;c.reputation=clamp(c.reputation+rand(6,13));worldNotify("🎤","Live entertainment","A famous performer drew in new guests.",8);}
+ else if(a==="slot"||a==="cards"){
+  if(S.age<18||!worldSpend(a==="slot"?100:250))return;
+  const win=Math.random()<(a==="slot"?.28:.45);const prize=win?(a==="slot"?rand(200,1200):rand(500,900)):0;S.money+=prize;
+  worldNotify(win?"🍀":"🎰",win?"A lucky round":"No prize",win?`You won ${cash(prize)} of fictional currency.`:"You didn't win this round. The house has the edge.",win?6:-3);
+ }
+ else if(a==="buyzoo"){if(S.age<18||z.owned||!worldSpend(110000))return;z.owned=true;z.welfare=78;worldNotify("🦒","Wildlife park opened","You opened your own wildlife sanctuary!",11);}
+ else if(a==="animal"){if(!z.owned||!worldSpend(26000))return;const animal=pick([{name:"Red Panda",icon:"🐼",value:24000},{name:"Giraffe",icon:"🦒",value:26000},{name:"Zebra",icon:"🦓",value:19000},{name:"Penguin",icon:"🐧",value:18000},{name:"Flamingo",icon:"🦩",value:8000},{name:"Koala",icon:"🐨",value:25000}]);z.animals.push(animal);z.welfare=clamp(z.welfare-4);worldNotify(animal.icon,"New arrival",`Your sanctuary welcomed a ${animal.name.toLowerCase()}!`,8);}
+ else if(a==="habitat"){if(!z.owned||!worldSpend(9000))return;z.welfare=clamp(z.welfare+rand(12,22));worldNotify("🌱","Habitat upgraded","You built a more comfortable habitat.",6);}
+ else if(a==="care"){if(!z.owned||!worldSpend(2000))return;z.welfare=clamp(z.welfare+rand(7,16));worldNotify("🩺","Animal care","Veterinarians examined the sanctuary animals.",5);}
+ else if(a==="zooad"){if(!z.owned||!worldSpend(3000))return;z.visitors+=rand(2000,10000);worldNotify("📣","Publicity campaign","More guests are excited to visit your park.",6);}
+ else if(a==="auction"){if(!worldSpend(5000))return;const name=pick(["Carved Marble Bust","Enamel Pocket Watch","Old Silver Compass","Ancient Ceramic Vase","Signed Poster","Rare Fossil"]);const worth=rand(800,28000);w.inventory.push({icon:"🏺",name,value:worth});worldNotify("🏺","Auction purchase",`You acquired a ${name.toLowerCase()} worth an estimated ${cash(worth)}.`,5);}
+ else if(a==="buymuseum"){if(S.age<18||m.owned||!worldSpend(90000))return;m.owned=true;m.prestige=20;worldNotify("🖼️","Museum founded","Your private collection now has a public home!",10);}
+ else if(a==="exhibit"){if(!m.owned)return;const item=w.inventory.splice(Number(idx),1)[0];if(!item)return;m.exhibits.push(item);m.prestige=clamp(m.prestige+rand(4,9));worldNotify("🏛️","New exhibit",`${item.name} is now on display.`,6);}
+ else if(a==="renovatemuseum"){if(!m.owned||!worldSpend(8500))return;m.prestige=clamp(m.prestige+rand(9,15));worldNotify("🛠️","Museum renovation","You modernized the galleries.",4);}
+ else if(a==="drivetraining"){if(S.age<16||!worldSpend(450))return;r.skill=clamp(r.skill+rand(7,13));worldNotify("🏎️","Driving training","Your racing skill improved.",5);}
+ else if(a==="race"||a==="grandprix"){
+  const pro=a==="grandprix",stake=pro?8000:700;
+  if(S.age<18||(pro&&r.skill<55)||!S.assets.some(x=>["car","sport"].includes(x.id))||!worldSpend(stake))return;
+  const success=Math.random()<Math.min(.9,Math.max(.15,r.skill/130+(S.assets.some(x=>x.id==="sport")?.16:0)-(pro?.16:0)));
+  if(success){const prize=pro?rand(30000,170000):rand(1500,12000);S.money+=prize;r.wins++;r.skill=clamp(r.skill+rand(3,8));worldNotify("🏁",pro?"Grand Prix podium":"Race victory",`You won your race and received ${cash(prize)}.`,13);if(r.wins>=6)worldRecord("Racing Champion");}
+  else{r.losses++;stat("health",-rand(0,7));worldNotify("🏁","Race defeat","You finished outside the podium.",-5);}
+ }else if(a==="repair"){if(!worldSpend(650))return;worldNotify("🧰","Vehicle repaired","Your car is in good condition.",3);}
+ else if(["hike","camp","kayak","photo"].includes(a)){
+  if(a==="camp"&&!worldSpend(500))return;
+  if(a==="kayak"&&!worldSpend(350))return;
+  o.trips++;o.exp=clamp(o.exp+rand(6,12));
+  if(Math.random()<.06&&a==="kayak"){stat("health",-4);worldNotify("🛶","River adventure","You had a minor accident, but still enjoyed the trip.",2);}
+  else{stat("health",rand(2,6));stat("happiness",rand(4,10));if(a==="photo")extraStat("creativity",8);worldNotify(a==="camp"?"🏕️":a==="hike"?"🥾":a==="photo"?"📷":"🛶","Outdoor adventure","You explored the outdoors and created new memories.",6);}
+  if(o.trips>=10)worldRecord("Nature Explorer");
+ }
+ save();render();
+};
+const packsTabs=['casino','zoo','museum','racing','outdoors'];worldTabs.push(...packsTabs);Object.assign(worldTitles,{casino:'Casino Life',zoo:'Wildlife Park',museum:'Museum & Antiques',racing:'Racing',outdoors:'Outdoor Adventures'});
+worldCareers.push({id:'street',icon:'🎭',name:'Street Performer',min:15,base:9000,required:15,basic:'Perform on the street',big:'Headline a street festival'},{id:'dealer',icon:'📦',name:'Underground Merchant',min:18,base:16000,required:30,basic:'Make an underground deal',big:'Negotiate a major shipment'});
+const olderWorldHubV5=worldsHub;
+worldsHub=function(){const html=olderWorldHubV5();const links=[wCard('🎰','Casino Life','Games, game rooms, casino ownership','casino'),wCard('🦒','Wildlife Park','Animals, habitats, visitors','zoo'),wCard('🖼️','Museum & Antiques','Auctions, collections, exhibits','museum'),wCard('🏎️','Racing','Driving skill, circuits, prizes','racing'),wCard('🏕️','Outdoor Adventures','Hiking, camping, kayaking','outdoors')].join('');return html.replace('<div class="world-grid">','<div class="world-grid">'+links);};
+const beforePacksYear=worldYear;
+worldYear=function(){beforePacksYear();if(S?.alive)packsYear();};
+const beforePacksRender=render;
+render=function(){beforePacksRender();if(!S)return;const nav=document.querySelector('.menu-panel .menu-reset');if(nav)nav.insertAdjacentHTML('beforebegin','<button data-goto="casino"><span>🎰</span>Casino Life</button><button data-goto="zoo"><span>🦒</span>Wildlife Park</button><button data-goto="museum"><span>🖼️</span>Museum & Antiques</button><button data-goto="racing"><span>🏎️</span>Racing</button><button data-goto="outdoors"><span>🏕️</span>Outdoor Adventures</button>');const p=document.querySelector('.promo-world-btn');if(p)p.textContent='🌎 Explore 15 game modes ›';};
+$('#app').addEventListener('click',e=>{const el=e.target.closest('button');if(!el)return;if(el.dataset.pack){e.stopImmediatePropagation();packsAction(el.dataset.pack,el.dataset.index);}},true);
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
