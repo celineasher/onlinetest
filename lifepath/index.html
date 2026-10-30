@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ee3613">
-<title>LifePath Classic — Life Simulator</title>
+<meta name="theme-color" content="#0b2238">
+<title>LifePath Reimagined — Build Your Story</title>
 <style>
 /* LifePath — original browser life simulator */
 :root{--green:#5baa4f;--greenDark:#3e913c;--lightGreen:#edf7eb;--paper:#ffffff;--line:#e9ece9;--bg:#e9ecea;--ink:#26342b;--muted:#88918c;--blue:#408ecd;--red:#e96b65;--purple:#aa7ad9;--gold:#d7a549}
@@ -342,9 +342,12 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 .final-ribbon{border:1px solid #ffd57a;background:linear-gradient(90deg,#fff8dc,#fff1b8);border-radius:11px;padding:13px;margin:12px 0;text-align:center;color:#a16706}.final-ribbon strong{font-size:14px}.quickstart-box{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 6px;padding:9px 11px;border:1px solid #ddedf4;border-radius:10px;background:#f3f9fc}.quickstart-box label{color:#42708a;font-weight:850;font-size:11px}.quickstart-box select{border:1px solid #cadde8;border-radius:8px;background:white;padding:9px;color:#245d7b;font-size:11px;font-weight:800;max-width:164px}
 </style>
 <link rel="stylesheet" href="./modern-classic.css?v=2">
+<link rel="stylesheet" href="./reimagined.css?v=5">
 </head>
 <body>
 <div id="app"></div>
+<script src="./reimagined-engine.js?v=5"></script>
+<script src="./reimagined-ui.js?v=5"></script>
 <script>
 (()=>{'use strict';
 const STORE='lifepath_save_v2';
@@ -1995,6 +1998,56 @@ $('#app').addEventListener('click',function(e){
  }
  if(el.dataset.goto==='career')lpOccupationView='menu';
  if(el.dataset.goto==='special')lpCareerPick=null;
+},true);
+
+
+/* LIFEPATH REIMAGINED INTEGRATION — safely extends the existing game */
+const rebirthContext=()=>({
+  getState:()=>S,
+  getTab:()=>tab,
+  setTab:(value)=>{tab=value;menuOpen=false;},
+  render:()=>render(),
+  save:()=>save(),
+  log:(icon,title,description)=>log(icon,title,description),
+  stat:(key,delta)=>stat(key,delta),
+  notice:(message,bad)=>notice(message,bad),
+  cash:(amount)=>cash(amount),
+  achievement:(id)=>achievement(id)
+});
+const rebirthOriginalRender=render;
+render=function(){
+  rebirthOriginalRender();
+  try{window.LifePathReimagined?.enhance?.(rebirthContext())}
+  catch(err){console.error('LifePath visual enhancement recovered:',err)}
+};
+const rebirthOriginalAge=ageUp;
+ageUp=function(){
+  if(!S||!S.alive||eventModal)return;
+  const previousAge=S.age;
+  rebirthOriginalAge();
+  if(S&&S.alive&&S.age>previousAge){
+    try{window.LifePathReimagined?.tick?.(S,rebirthContext())}
+    catch(err){console.error('LifePath business simulation recovered:',err)}
+    save();render();
+  }
+};
+const rebirthOriginalRandomEvent=randomEvent;
+randomEvent=function(){
+  try{
+    const extra=window.LifePathReimagined?.makeEvent?.(S,rebirthContext());
+    if(extra)return extra;
+  }catch(err){console.error('LifePath story engine recovered:',err)}
+  return rebirthOriginalRandomEvent();
+};
+$('#app').addEventListener('click',e=>{
+  const button=e.target.closest('button');
+  if(!button)return;
+  try{
+    if(window.LifePathReimagined?.handle?.(button,rebirthContext())){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  }catch(err){console.error('LifePath extra action recovered:',err)}
 },true);
 
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
