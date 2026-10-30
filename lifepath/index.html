@@ -337,6 +337,7 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 @media(max-width:350px){.world-wrap{padding:9px 7px}.world-panel{padding:9px}.world-action{min-height:88px;padding:8px}.world-feature{padding:11px}.world-entry{padding:9px;gap:8px}}
 
 .menu-panel{overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px;scrollbar-width:thin}.menu-panel button{flex-shrink:0}.world-special-banner{background:linear-gradient(110deg,#dff6f6,#fff4dc);border:1px solid #d6edf1;padding:11px 13px;border-radius:10px;color:#1d6681;font-weight:800;font-size:11px;margin:7px 0}.world-panel .world-stats{margin-bottom:8px}.world-heir{width:100%}.world-action:active:not(:disabled){transform:scale(.98)}
+.origin-panel{background:#eef6fd;border:1px solid #d8eaf6;border-radius:10px;padding:11px;margin:10px 0}.origin-panel small{font-weight:750;color:#48718d;font-size:10px}.origin-panel select{width:100%;margin-top:7px;padding:10px;border-radius:7px;border:1px solid #c6dce9;background:white;font-weight:800;color:#215979;font-size:12px}.editor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.editor-stat{border:1px solid #dfeaf2;border-radius:9px;padding:10px;background:#f7fbfd}.editor-stat>strong{display:block;color:#215a79;text-transform:capitalize;font-size:11px}.editor-stat>small{display:block;color:#6d96a8;margin:4px 0}.editor-stat button{font-size:12px;border:1px solid #c4dce8;background:#fff;color:#226185;padding:5px 13px;border-radius:7px;margin-right:5px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1293,7 +1294,7 @@ const wTitle=function wTitle(title,small){
 const wActions=function wActions(items){
  return `<div class="world-actions">${items.map(a=>`<button class="world-action" ${a.attr||""} ${a.disabled?"disabled":""}><span>${a.icon}</span><strong>${a.name}</strong><small>${a.detail||""}</small></button>`).join("")}</div>`;
 };
-const worldsHub=function worldsHub(){
+let worldsHub=function worldsHub(){
  const w=ensureWorld();
  return `<div class="world-wrap">${wTitle("Explore Your Life","Choose a path to shape your character’s story.")}
  <div class="world-feature"><div>🌎</div><section><strong>LifePath: Worlds</strong><p>Build a legacy, make a fortune, become famous, or make your own rules.</p><small>All these gameplay modes are available for free.</small></section></div>
@@ -1452,7 +1453,7 @@ const worldRender=function worldRender(){
  }
  const main=document.querySelector(".subpage");
  if(worldTabs.includes(tab)&&main){
-  const layouts={worlds:worldsHub,special:worldsCareers,fame:worldsFame,crime:worldsCrime,landlord:worldsLandlord,portfolio:worldsPortfolio,wellness:worldsWellness,creative:worldsCreative,community:worldsCommunity,legacy:worldsLegacy};
+  const layouts={worlds:worldsHub,special:worldsCareers,fame:worldsFame,crime:worldsCrime,landlord:worldsLandlord,portfolio:worldsPortfolio,wellness:worldsWellness,creative:worldsCreative,community:worldsCommunity,legacy:worldsLegacy,youth:worldsYouth};
   main.innerHTML=`<div class="subhead"><button class="back-button" data-goto="worlds" aria-label="Back to Worlds">‹</button>${tab==="worlds"?"Explore Life":worldTitles[tab]}</div>${layouts[tab]()}`;
  }
  const nav=document.querySelector(".menu-panel");
@@ -1613,6 +1614,77 @@ worldsCareers=function(){const html=beforeSpecialtyView();return html.replace(/<
 const beforeWorldPortfolio=worldsPortfolio;
 worldsPortfolio=function(){let html=beforeWorldPortfolio();return html.replace(/<\/div>\s*$/,'<div class="world-panel"><h3>💰 Overview</h3>'+worldMoneyBalance()+'</div></div>');};
 $('#app').addEventListener('click',e=>{const el=e.target.closest('button');if(!el)return;const mode=el.dataset.careermode;if(mode){e.stopImmediatePropagation();worldSpecialty(mode)}},true);
+/* LIFEPATH WORLDS V4 YOUTH */
+const ensureYouth=function ensureYouth(){
+ const w=ensureWorld();if(!w)return;
+ if(!Number.isFinite(w.grades))w.grades=rand(45,85);
+ if(typeof w.drivingLicense!=="boolean")w.drivingLicense=false;
+ if(typeof w.scholarship!=="boolean")w.scholarship=false;
+ if(!w.origin)w.origin="Everyday life";
+ return w;
+};
+const worldsYouth=function worldsYouth(){
+ const w=ensureYouth();
+ return `<div class="world-wrap">${wTitle("Education & Growing Up","Learn, make friends, join clubs, and set up your future.")}
+ <div class="world-feature"><div>🎓</div><section><strong>${esc(education())}</strong><p>Smarts: ${S.stats.smarts}/100 · Grades: ${w.grades}/100</p><small>${w.scholarship?"Merit scholarship awarded":"Keep your grades up for scholarships."}</small></section></div>
+ <div class="world-panel"><h3>Education milestones</h3>${wMetric("Smarts",S.stats.smarts)}${wMetric("School grades",w.grades)}
+ ${wActions([{icon:"📚",name:"Study extra",detail:"Improve grades and smarts",attr:'data-youth="study"',disabled:S.age<6||S.age>22},{icon:"🎭",name:"Drama club",detail:"Learn performance skills",attr:'data-youth="drama"',disabled:S.age<6||S.age>17},{icon:"⚽",name:"Sports club",detail:"Train and compete",attr:'data-youth="sport"',disabled:S.age<6||S.age>17},{icon:"🔬",name:"Science fair",detail:"Boost your knowledge",attr:'data-youth="science"',disabled:S.age<7||S.age>17},{icon:"🎓",name:"Apply for scholarship",detail:"Requires 75 smarts & 75 grades",attr:'data-youth="scholarship"',disabled:S.age<16||S.age>22||S.stats.smarts<75||w.grades<75||w.scholarship},{icon:"🚗",name:w.drivingLicense?"Driver’s license earned":"Take driving test",detail:"Age 16+ · $80",attr:'data-youth="license"',disabled:S.age<16||w.drivingLicense||S.money<80}])}
+ </div><div class="world-panel"><h3>School to career</h3><p class="world-muted">Study, go to university, and apply for regular jobs in Occupation. A merit scholarship helps cover university tuition.</p><button class="large-cta" data-goto="career">💼 Visit Occupation & School ›</button></div></div>`;
+};
+const youthAction=function youthAction(a){
+ const w=ensureYouth();if(!S.alive)return;
+ const limited=a!=="license"&&a!=="scholarship";
+ if(limited&&!consume("youth-"+a))return;
+ if(a==="study"){if(S.age<6||S.age>22)return;w.grades=clamp(w.grades+rand(5,12));stat("smarts",rand(2,5));worldNotify("📚","Academic progress","Your extra study sessions improved your school performance.",2);}
+ else if(a==="drama"){if(S.age<6||S.age>17)return;extraStat("creativity",rand(5,10));w.grades=clamp(w.grades+2);worldNotify("🎭","Theater club","You performed in a student production.",8);}
+ else if(a==="sport"){if(S.age<6||S.age>17)return;stat("health",rand(3,7));w.vitality=clamp(w.vitality+5);worldNotify("⚽","Team sports","You played in a school sports competition.",5);}
+ else if(a==="science"){if(S.age<7||S.age>17)return;w.grades=clamp(w.grades+rand(4,9));stat("smarts",rand(2,6));worldNotify("🔬","Science fair","You entered an interesting science project.",4);}
+ else if(a==="scholarship"){if(S.age<16||w.scholarship||w.grades<75||S.stats.smarts<75)return;w.scholarship=true;worldNotify("🎓","Merit scholarship","Your excellent school performance qualified you for tuition support.",15);}
+ else if(a==="license"){if(S.age<16||w.drivingLicense||!worldSpend(80))return;if(Math.random()<.48+S.stats.smarts/250){w.drivingLicense=true;worldNotify("🚘","Driving test passed","You earned your driver's license!",12);}else worldNotify("🚦","Driving test failed","You can try the driving test again.",-3);}
+ save();render();
+};
+const reliefAction=function reliefAction(type){
+ const w=ensureWorld();
+ if(!S.alive||w.prison||S.age<18)return;
+ if(!consume("relief-"+type))return;
+ if(type==="aid"){if(S.money>0||S.job||getCareer())return notice("This option is for unemployed characters in debt.",true);const amount=rand(4000,8000);S.money+=amount;worldNotify("🤝","Emergency assistance",`You received ${cash(amount)} in temporary financial assistance.`,5);}
+ else if(type==="temp"){const income=rand(2200,5500);S.money+=income;extraStat("stress",6);worldNotify("🧰","Temporary work",`You earned ${cash(income)} from temporary work.`,3);}
+ save();render();
+};
+const scenarioStart=function scenarioStart(){
+ const mode=document.getElementById("origin")?.value||"Everyday life";
+ scenarioStart._base();
+ if(!S)return;
+ const w=ensureYouth();w.origin=mode;
+ if(mode==="Creative household"){extraStat("creativity",35);S.stats.smarts=clamp(S.stats.smarts+8);log("🎨","A creative upbringing","Your household encouraged music and arts.");}
+ if(mode==="Academic family"){S.stats.smarts=clamp(S.stats.smarts+24);w.grades=88;log("📚","A curious childhood","Your family loved learning.");}
+ if(mode==="Athletic family"){S.stats.health=clamp(S.stats.health+12);w.vitality=100;log("⚽","A sporty childhood","Sports are a big part of your family life.");}
+ if(mode==="Comfortable upbringing"){S.money=25000;log("💰","A comfortable start","Your family set aside $25,000 for your future.");}
+ if(mode==="Royal ancestry"){w.royalBorn=true;w.courtStanding=90;S.money+=150000;log("👑","A royal beginning","You were born into an influential family.");}
+ if(mode==="Hardship challenge"){S.stats.happiness=clamp(S.stats.happiness-20);S.money=0;w.karma=50;log("🧩","A challenging start","You faced difficult circumstances from an early age.");}
+ save();render();
+};
+const editorAction=function editorAction(statName,direction){
+ if(!S||!S.alive)return;
+ const valid=["health","happiness","smarts","looks","creativity","stress"];
+ if(!valid.includes(statName))return;
+ const d=direction==="add"?10:-10;
+ if(statName==="creativity"||statName==="stress")extraStat(statName,d);
+ else stat(statName,d);
+ worldNotify("🎛️","Character adjusted",`You adjusted your ${statName} trait.`);
+ save();render();
+};
+worldTabs.push('youth');worldTitles.youth='School & Youth';
+const oldWorldHub=worldsHub;
+worldsHub=function(){return oldWorldHub().replace('<div class="world-grid">','<div class="world-grid">'+wCard('🎓','School & Youth','Clubs, grades, scholarships, driving test','youth'));};
+const oldCreateScreenV4=createScreen;
+createScreen=function(){const html=oldCreateScreenV4();return html.replace('</form>','<div class="origin-panel"><small>YOUR STARTING BACKGROUND</small><select id="origin" name="origin"><option>Everyday life</option><option>Creative household</option><option>Academic family</option><option>Athletic family</option><option>Comfortable upbringing</option><option>Royal ancestry</option><option>Hardship challenge</option></select></div></form>');};
+scenarioStart._base=startFromForm;startFromForm=scenarioStart;
+const oldWorldYearV4=worldYear;
+worldYear=function(){const w=ensureYouth();oldWorldYearV4();if(!S.alive)return;if(S.collegeEnd!==null&&w.scholarship){S.money+=8500;log('🎓','Scholarship support','Your merit scholarship covered $8,500 of tuition.');}if(S.age>=6&&S.age<=22)w.grades=clamp(w.grades+rand(-4,3));save();render();};
+const oldWorldUIRender=render;
+render=function(){oldWorldUIRender();if(!S)return;const menu=document.querySelector('.menu-panel .menu-reset');if(menu)menu.insertAdjacentHTML('beforebegin','<button data-goto="youth"><span>🎓</span>School & Youth</button>');if(tab==='profile'){const sub=document.querySelector('.subpage');if(sub){const w=ensureWorld();const names=['health','happiness','smarts','looks','creativity','stress'];sub.insertAdjacentHTML('beforeend','<div class="card"><h2>🎛️ Character Editor</h2><p class="section-intro">Sandbox controls: freely edit your character traits to test different lives.</p><div class="editor-grid">'+names.map(n=>'<div class="editor-stat"><strong>'+n+'</strong><small>'+((S.stats[n]??S.extras[n])||0)+'/100</small><button data-editstat="'+n+'" data-dir="sub">−</button><button data-editstat="'+n+'" data-dir="add">+</button></div>').join('')+'</div></div>');}}if(tab==='portfolio'){const sub=document.querySelector('.subpage');if(sub&&S.age>=18){sub.insertAdjacentHTML('beforeend','<div class="world-panel"><h3>🧰 Income support</h3><p class="world-muted">Short on cash? Work temporary jobs or apply for emergency aid.</p>'+wActions([{icon:'🛠️',name:'Temporary work',detail:'Earn $2,200–$5,500',attr:'data-relief="temp"'},{icon:'🤝',name:'Emergency aid',detail:'Only when unemployed and in debt',attr:'data-relief="aid"',disabled:S.money>0||S.job||getCareer()}])+'</div>');}}};
+$('#app').addEventListener('click',e=>{const el=e.target.closest('button');if(!el)return;const d=el.dataset;if(d.youth){e.stopImmediatePropagation();youthAction(d.youth);}if(d.relief){e.stopImmediatePropagation();reliefAction(d.relief);}if(d.editstat){e.stopImmediatePropagation();editorAction(d.editstat,d.dir);}},true);
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
