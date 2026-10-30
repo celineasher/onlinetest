@@ -339,6 +339,7 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 .menu-panel{overflow-y:auto;overscroll-behavior:contain;padding-bottom:12px;scrollbar-width:thin}.menu-panel button{flex-shrink:0}.world-special-banner{background:linear-gradient(110deg,#dff6f6,#fff4dc);border:1px solid #d6edf1;padding:11px 13px;border-radius:10px;color:#1d6681;font-weight:800;font-size:11px;margin:7px 0}.world-panel .world-stats{margin-bottom:8px}.world-heir{width:100%}.world-action:active:not(:disabled){transform:scale(.98)}
 .origin-panel{background:#eef6fd;border:1px solid #d8eaf6;border-radius:10px;padding:11px;margin:10px 0}.origin-panel small{font-weight:750;color:#48718d;font-size:10px}.origin-panel select{width:100%;margin-top:7px;padding:10px;border-radius:7px;border:1px solid #c6dce9;background:white;font-weight:800;color:#215979;font-size:12px}.editor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.editor-stat{border:1px solid #dfeaf2;border-radius:9px;padding:10px;background:#f7fbfd}.editor-stat>strong{display:block;color:#215a79;text-transform:capitalize;font-size:11px}.editor-stat>small{display:block;color:#6d96a8;margin:4px 0}.editor-stat button{font-size:12px;border:1px solid #c4dce8;background:#fff;color:#226185;padding:5px 13px;border-radius:7px;margin-right:5px;cursor:pointer}
 .world-panel .world-jobs+.world-muted{margin-top:11px}.world-panel .large-cta{margin-top:13px}
+.final-ribbon{border:1px solid #ffd57a;background:linear-gradient(90deg,#fff8dc,#fff1b8);border-radius:11px;padding:13px;margin:12px 0;text-align:center;color:#a16706}.final-ribbon strong{font-size:14px}.quickstart-box{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 6px;padding:9px 11px;border:1px solid #ddedf4;border-radius:10px;background:#f3f9fc}.quickstart-box label{color:#42708a;font-weight:850;font-size:11px}.quickstart-box select{border:1px solid #cadde8;border-radius:8px;background:white;padding:9px;color:#245d7b;font-size:11px;font-weight:800;max-width:164px}
 </style>
 </head>
 <body>
@@ -1819,6 +1820,52 @@ worldYear=function(){beforePacksYear();if(S?.alive)packsYear();};
 const beforePacksRender=render;
 render=function(){beforePacksRender();if(!S)return;const nav=document.querySelector('.menu-panel .menu-reset');if(nav)nav.insertAdjacentHTML('beforebegin','<button data-goto="casino"><span>🎰</span>Casino Life</button><button data-goto="zoo"><span>🦒</span>Wildlife Park</button><button data-goto="museum"><span>🖼️</span>Museum & Antiques</button><button data-goto="racing"><span>🏎️</span>Racing</button><button data-goto="outdoors"><span>🏕️</span>Outdoor Adventures</button>');const p=document.querySelector('.promo-world-btn');if(p)p.textContent='🌎 Explore 15 game modes ›';};
 $('#app').addEventListener('click',e=>{const el=e.target.closest('button');if(!el)return;if(el.dataset.pack){e.stopImmediatePropagation();packsAction(el.dataset.pack,el.dataset.index);}},true);
+/* LIFEPATH V5 FINISHING */
+const finalRibbon=function finalRibbon(){
+ const w=ensureWorld();if(!S)return "Your Story";
+ if(w.fame>=75||w.followers>=1e6)return "Famous Icon";
+ if(w.convictions>=3)return "Notorious Outlaw";
+ if(w.special?.id==="fighter"&&w.winStreak>=4)return "Fighting Legend";
+ if(S.money+w.crypto+w.bonds>=1000000)return "Wealth Builder";
+ if(S.children>=3)return "Family Legend";
+ if(w.generations>=2)return "Family Dynasty";
+ if(S.age>=90)return "A Remarkable Lifetime";
+ if(w.cult>=30)return "Community Leader";
+ if(w.special?.awards>=2)return "Award Winner";
+ return "Everyday Legend";
+};
+const prisonLifeEvent=function prisonLifeEvent(){
+ const w=ensureWorld();
+ if(S?.alive&&w.prison>1){
+  return {icon:"🔒",title:"Life Behind Bars",text:"How will you spend the coming year during your sentence?",choices:[
+   {text:"Spend time studying",fn:()=>{stat("smarts",5);worldNotify("📚","Prison studies","You used the prison library to learn new things.",3)}},
+   {text:"Stay active and exercise",fn:()=>{stat("health",6);worldNotify("🏋️","Staying healthy","You kept your physical health up.",3)}},
+   {text:"Keep to yourself",fn:()=>{extraStat("stress",-6);worldNotify("🕊️","A quiet year","You chose a peaceful routine.",2)}}
+  ]};
+ }
+ return prisonLifeEvent._base();
+};
+prisonLifeEvent._base=randomEvent;randomEvent=prisonLifeEvent;
+const fastStartForm=function fastStartForm(){
+ const startAt=Number(document.getElementById("startingAge")?.value||0);
+ fastStartForm._base();
+ if(!S)return;
+ if(startAt===18||startAt===30){
+  S.age=startAt;
+  achievement("graduation");
+  if(startAt===30){S.degree=true;achievement("degree");S.money+=50000;S.stats.smarts=clamp(S.stats.smarts+15);}
+  else S.money+=18000;
+  const w=ensureWorld();
+  w.vitality=clamp(w.vitality+5);
+  log("⏩","A quick beginning",`Your story begins at age ${startAt}. You can explore careers and adult activities right away.`);
+  save();render();
+ }
+};
+fastStartForm._base=startFromForm;startFromForm=fastStartForm;
+const beforeFastStartScreen=createScreen;
+createScreen=function(){return beforeFastStartScreen().replace('</form>','<div class="quickstart-box"><label for="startingAge">Start age</label><select id="startingAge"><option value="0">Birth · classic</option><option value="18">18 · quick start</option><option value="30">30 · established</option></select></div></form>');};
+const beforeFinalRender=render;
+render=function(){beforeFinalRender();if(!S||S.alive)return;const modal=document.querySelector('.modal');if(modal){const start=modal.querySelector('[data-new]');if(start)start.insertAdjacentHTML('beforebegin','<div class="final-ribbon">🎗️ <strong>'+esc(finalRibbon())+'</strong><div>Your life’s lasting legacy</div></div>');}};
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
