@@ -210,3 +210,9 @@ button:not(:disabled){-webkit-tap-highlight-color:transparent}
 @media(max-width:375px){.brand{font-size:29px!important}.header-world-btn{font-size:10px!important}.character-portrait{width:48px!important;height:48px!important}.character-strip{padding:9px 10px!important}.character-detail strong{font-size:12px!important}.money-detail strong{font-size:13px!important}.nav-label{font-size:9px!important}.age-button{width:91px!important;height:91px!important}.stat-line{grid-template-columns:92px minmax(0,1fr) 32px!important}.lp-row{padding:12px 13px!important}.lp-rb-hero{padding:16px 13px}}
 @media(max-height:650px){.stats-dock{padding:7px 12px!important}.stat-line{margin-bottom:2px!important}.bottom-nav{height:72px!important}.promo-strip{height:26px!important;min-height:26px!important}.character-strip{min-height:73px!important}.game-header{min-height:60px!important}.age-button{width:86px!important;height:86px!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* User accessibility preference and low-motion performance mode */
+body.lp-no-motion *,body.lp-no-motion *::before,body.lp-no-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+.timeline-entry{animation:none!important}
+.timeline-entry:nth-last-child(-n+8){animation:lp-feed-rise .4s var(--lp-ease) both!important}
+body.lp-no-motion .timeline-entry:nth-last-child(-n+8){animation:none!important}
