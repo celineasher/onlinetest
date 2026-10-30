@@ -2048,6 +2048,14 @@ $('#app').addEventListener('click',e=>{
     if(window.LifePathReimagined?.handle?.(button,rebirthContext())){
       e.preventDefault();
       e.stopImmediatePropagation();
+      return;
+    }
+    // Reset any expanded screen when the user taps a standard navigation tab.
+    if(button.dataset.goto && window.LifePathReimagined?.screen){
+      window.LifePathReimagined.screen=null;
+      window.LifePathReimagined.owner=null;
+      window.LifePathReimagined.modal=null;
+      render();
     }
   }catch(err){console.error('LifePath extra action recovered:',err)}
 },true);
