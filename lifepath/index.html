@@ -271,6 +271,71 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 @media(max-width:370px){.promo-pill{min-width:0;padding-inline:7px;font-size:9px}.extra-grid{gap:5px}.extra-tile{padding:8px}.character-detail strong{font-size:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
+
+/* LIFEPATH WORLDS V4 UI */
+.world-wrap{padding:12px 12px 28px;display:flex;flex-direction:column;gap:11px;background:#f5f8fb;min-height:100%}
+.world-heading{padding:6px 3px 0}
+.world-heading h2{margin:0 0 4px;font-size:19px;font-weight:900;color:#17415e;letter-spacing:-.3px}
+.world-heading p{margin:0;color:#72879a;font-size:11px;line-height:1.4}
+.world-grid{display:flex;flex-direction:column;gap:7px}
+.world-entry{display:flex;align-items:center;gap:11px;border:1px solid #dce9f1;border-radius:11px;background:#fff;padding:11px 13px;width:100%;text-align:left;cursor:pointer;box-shadow:0 1px 1px #16456808;min-height:62px}
+.world-entry:hover{background:#f1f9ff;border-color:#9eceeb}
+.world-entry-icon{width:37px;height:37px;display:grid;place-items:center;background:#e9f5fb;border-radius:9px;font-size:22px;flex-shrink:0}
+.world-entry-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.world-entry-copy strong{color:#225370;font-size:12px;font-weight:900}
+.world-entry-copy small{color:#8795a1;font-size:10px}
+.world-chevron{color:#79a5c0;font-size:26px;font-weight:600}
+.world-feature{background:linear-gradient(115deg,#0077b2,#22b6b7);border-radius:14px;padding:15px;color:#fff;display:flex;gap:12px;align-items:center;box-shadow:0 4px 12px #047ba020}
+.world-feature>div{background:#ffffff35;width:56px;height:56px;display:grid;place-items:center;border-radius:16px;font-size:31px;flex-shrink:0}
+.world-feature section{min-width:0}
+.world-feature strong{display:block;font-size:16px;line-height:1.2}
+.world-feature p{margin:5px 0;color:#eafaff;font-size:12px}
+.world-feature small{color:#d1f5fc;font-size:10px;line-height:1.4}
+.world-feature.danger{background:linear-gradient(125deg,#9c3346,#d66c44)}
+.world-feature.danger small{color:#ffe6de}
+.world-panel{background:white;border:1px solid #e2eaf0;border-radius:13px;padding:14px;box-shadow:0 2px 7px #1f496009}
+.world-panel h3{margin:0 0 9px;font-size:14px;font-weight:900;color:#275672}
+.world-panel>.world-muted{margin:2px 0 12px}
+.world-muted{font-size:11px;color:#7b8fa1;line-height:1.55}
+.world-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.world-action{border:1px solid #e0eaf1;background:#f7fafc;border-radius:11px;padding:10px;text-align:left;min-height:92px;display:flex;flex-direction:column;gap:4px;cursor:pointer;align-items:flex-start}
+.world-action span{font-size:22px;line-height:1.1}
+.world-action strong{font-size:11px;font-weight:900;color:#1c4b69}
+.world-action small{font-size:9px;color:#8090a1;line-height:1.25}
+.world-action:hover:not(:disabled){background:#edf8fd;border-color:#9dcddd}
+.world-action:disabled{opacity:.38;cursor:default}
+.world-jobs{display:flex;flex-direction:column}
+.world-job{display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid #edf1f6}
+.world-job:first-child{border-top:0}
+.world-job-icon{width:35px;height:35px;border-radius:9px;background:#e9f3fb;display:grid;place-items:center;font-size:20px;flex:none}
+.world-job-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.world-job-copy strong{font-size:11px;color:#244d63}
+.world-job-copy small{font-size:10px;color:#8798a7}
+.world-job .btn{padding:8px 10px;font-size:10px;flex:none}
+.world-measure{display:flex;flex-direction:column;gap:6px;margin:11px 0}
+.world-measure>div{display:flex;justify-content:space-between;align-items:center}
+.world-measure strong{color:#52758b;font-size:10px}
+.world-measure b{color:#195d82;font-size:11px}
+.world-measure>span{display:block;background:#e8f0f6;border-radius:100px;height:8px;overflow:hidden}
+.world-measure>span i{display:block;background:linear-gradient(90deg,#25b8c7,#32ba5c);height:100%;border-radius:100px}
+.world-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.world-stats>div{background:#f0f7fb;border-radius:8px;padding:10px 7px}
+.world-stats b{display:block;color:#246287;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.world-stats small{display:block;font-size:9px;color:#7595aa;margin-top:4px}
+.world-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.world-summary div{padding:12px 7px;background:#e6f1fa;border-radius:11px;text-align:center}
+.world-summary span{font-size:9px;color:#6c8eaa;font-weight:800}
+.world-summary strong{display:block;margin-top:4px;color:#205b82;font-size:12px}
+.world-empty{padding:25px 12px;color:#8fa2ad;font-size:11px;text-align:center}
+.world-estate{border:1px solid #e5edf2;border-radius:10px;padding:12px;margin:8px 0;background:#fafcfe;display:flex;flex-direction:column;gap:6px}
+.world-estate strong{font-size:11px;color:#285a77}
+.world-estate small{font-size:10px;color:#8798aa}
+.world-estate .extra-actions{margin-top:5px}
+.promo-world-btn{background:#fff5b4;border:1px solid #ffda64;padding:5px 11px;border-radius:99px;color:#a76402;font-weight:900;font-size:10px;cursor:pointer}
+.header-world-btn{border:1px solid #ffffff70;border-radius:7px;color:white;background:#ffffff24;padding:6px 8px;font-size:11px;font-weight:900;cursor:pointer}
+.world-heir{margin-bottom:9px;background:#1a9eac!important}
+@media(max-width:350px){.world-wrap{padding:9px 7px}.world-panel{padding:9px}.world-action{min-height:88px;padding:8px}.world-feature{padding:11px}.world-entry{padding:9px;gap:8px}}
+
 </style>
 </head>
 <body>
@@ -1212,6 +1277,223 @@ const worldHealthAction=function worldHealthAction(type){
 };
 const oldWorldAge=ageUp;
 ageUp=function(){if(!S||!S.alive||eventModal)return;const a=S.age;oldWorldAge();if(S&&S.alive&&S.age>a)worldYear();};
+/* LIFEPATH WORLDS V4 UI */
+const worldTabs=["worlds","special","fame","crime","landlord","portfolio","wellness","creative","community","legacy"];
+const worldTitles={"worlds":"Explore Life","special":"Special Careers","fame":"Fame & Social","crime":"Crime & Justice","landlord":"Landlord","portfolio":"Investments & Luxury","wellness":"Health & Wellness","creative":"Creative Studio","community":"Community","legacy":"Family Legacy"};
+const wCard=function wCard(icon,title,description,target,extra=""){
+ return `<button class="world-entry" data-goto="${target}"><span class="world-entry-icon">${icon}</span><span class="world-entry-copy"><strong>${title}</strong><small>${description}</small></span><span class="world-chevron">›</span>${extra}</button>`;
+};
+const wMetric=function wMetric(name,v,max=100){
+ const value=Math.min(100,Math.round((v/max)*100));return `<div class="world-measure"><div><strong>${name}</strong><b>${Math.round(v).toLocaleString()}</b></div><span><i style="width:${value}%"></i></span></div>`;
+};
+const wTitle=function wTitle(title,small){
+ return `<div class="world-heading"><div><h2>${title}</h2><p>${small}</p></div></div>`;
+};
+const wActions=function wActions(items){
+ return `<div class="world-actions">${items.map(a=>`<button class="world-action" ${a.attr||""} ${a.disabled?"disabled":""}><span>${a.icon}</span><strong>${a.name}</strong><small>${a.detail||""}</small></button>`).join("")}</div>`;
+};
+const worldsHub=function worldsHub(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Explore Your Life","Choose a path to shape your character’s story.")}
+ <div class="world-feature"><div>🌎</div><section><strong>LifePath: Worlds</strong><p>Build a legacy, make a fortune, become famous, or make your own rules.</p><small>All these gameplay modes are available for free.</small></section></div>
+ <div class="world-grid">
+ ${wCard("🎭","Special Careers","15 paths, auditions, contracts, achievements","special")}
+ ${wCard("📱","Fame & Social Media","Followers, brands, content, celebrity status","fame")}
+ ${wCard("🚨","Crime & Justice","Crime, arrests, prison, parole, justice","crime")}
+ ${wCard("🏠","Landlord & Estates","Tenants, renovations, rental income","landlord")}
+ ${wCard("💎","Investments & Luxury","Digital assets, bonds, collectibles","portfolio")}
+ ${wCard("🧬","Family & Legacy","Children, generations, inheritance, time travel","legacy")}
+ ${wCard("🩺","Wellness","Medical care, conditions, nutrition, mindfulness","wellness")}
+ ${wCard("🎬","Creative Studio","Create films, books, apps and music","creative")}
+ ${wCard("🕯️","Community Builder","Start and grow a personal movement","community")}
+ </div>
+ <div class="world-summary">
+ <div><span>AGE</span><strong>${S.age}</strong></div><div><span>NET WORTH</span><strong>${cash(wealth()+w.crypto+w.bonds)}</strong></div><div><span>GENERATIONS</span><strong>${w.generations}</strong></div>
+ </div></div>`;
+};
+const worldsCareers=function worldsCareers(){
+ const w=ensureWorld(), active=getCareer(),c=w.special;
+ return `<div class="world-wrap">${wTitle("Special Careers","Build mastery and climb the ranks. Each career is playable.")}
+ ${active?`<div class="world-feature"><div>${active.icon}</div><section><strong>${active.name}</strong><p>Level ${c.level+1} · ${cash(active.base*(1+c.level*.4)+c.contract)} estimated annual earnings</p><small>${c.years} years · ${c.awards} honors</small></section></div>
+ <div class="world-panel">${wMetric("Skill",c.skill)}${wMetric("Career progress",c.progress)}
+ ${wActions([{icon:"🏋️",name:"Practice",detail:"Train this year",attr:'data-special="train"'},{icon:active.icon,name:active.basic,detail:"Build your reputation",attr:'data-special="work"'},{icon:"🏆",name:active.big,detail:"High-risk, high-reward",attr:'data-special="big"'},{icon:"📜",name:"Negotiate contract",detail:"Level 3+ required",attr:'data-special="contract"',disabled:c.level<2},{icon:"🚪",name:"Leave career",detail:"Try a new path",attr:'data-special="leave"'}])}
+ </div>`:""}
+ <div class="world-panel"><h3>${active?"Change careers":"Choose your first special career"}</h3><p class="world-muted">Regular jobs remain available in Occupation. Special careers earn additional income.</p>
+ <div class="world-jobs">${worldCareers.map(q=>`<div class="world-job"><div class="world-job-icon">${q.icon}</div><div class="world-job-copy"><strong>${q.name}</strong><small>${cash(q.base)}/yr start · Age ${q.min}+</small></div><button class="btn ${active?.id===q.id?"ghost":"primary"}" data-special="join" data-id="${q.id}" ${S.age<q.min||active?.id===q.id?"disabled":""}>${active?.id===q.id?"ACTIVE":S.age<q.min?"LOCKED":"JOIN"}</button></div>`).join("")}</div>
+ </div></div>`;
+};
+const worldsFame=function worldsFame(){
+ const w=ensureWorld(),social=w.followers,f=w.fame;
+ return `<div class="world-wrap">${wTitle("Fame & Social Media","Turn everyday posts into a public career.")}
+ <div class="world-feature"><div>⭐</div><section><strong>${f>=80?"Household Name":f>=50?"Rising Celebrity":f>=20?"Up-and-Coming":"Unknown Creator"}</strong><p>${social.toLocaleString()} followers</p><small>${w.socialPosts} posts · ${cash(w.royalties)} ongoing annual royalties</small></section></div>
+ <div class="world-panel">${wMetric("Fame",f)}${wMetric("Audience",Math.min(social,1000000),1000000)}
+ <h3>Build an audience</h3>${wActions([{icon:"📱",name:"Post content",detail:"Build your followers",attr:'data-social="post"',disabled:S.age<13},{icon:"🚀",name:"Viral campaign",detail:"$800 · Chance of a big boost",attr:'data-social="viral"',disabled:S.age<13||S.money<800},{icon:"💵",name:"Brand deal",detail:"5,000 followers required",attr:'data-social="sponsor"',disabled:social<5000},{icon:"🎙️",name:"Go live",detail:"Earn tips and engagement",attr:'data-social="stream"',disabled:S.age<13}])}
+ </div><div class="world-panel"><h3>Milestones</h3><div class="world-stats"><div><b>50 fame</b><small>Rising Celebrity</small></div><div><b>1M followers</b><small>Social Icon</small></div><div><b>80 fame</b><small>Household Name</small></div></div></div></div>`;
+};
+const worldsCrime=function worldsCrime(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Crime & Justice","Choices have consequences. Risk your freedom or turn your life around.")}
+ ${w.prison>0?`<div class="world-feature danger"><div>🔒</div><section><strong>Incarcerated</strong><p>${w.prison} years left in your sentence</p><small>You can age up, exercise, study, appeal, or apply for parole.</small></section></div>
+ <div class="world-panel">${wActions([{icon:"📚",name:"Prison library",detail:"Study and improve smarts",attr:'data-prison="study"'},{icon:"🏋️",name:"Exercise",detail:"Improve health",attr:'data-prison="fitness"'},{icon:"⚖️",name:"File an appeal",detail:"Try to shorten sentence",attr:'data-prison="appeal"'},{icon:"🔓",name:"Apply for parole",detail:"Best near sentence completion",attr:'data-prison="parole"'},{icon:"🏃",name:"Try to escape",detail:"Very risky",attr:'data-prison="escape"'}])}</div>`:`<div class="world-feature"><div>⚖️</div><section><strong>${w.convictions?"Criminal record":"Clean record"}</strong><p>${w.convictions} convictions · ${w.wanted} notoriety</p><small>Choices are simulated and outcomes are determined by probability.</small></section></div>
+ <div class="world-panel"><h3>Risky actions</h3>${wActions([{icon:"👜",name:"Pickpocket",detail:"Small gain · Low risk",attr:'data-crime="pickpocket"',disabled:S.age<12},{icon:"🛍️",name:"Shoplift",detail:"Small gain · Low risk",attr:'data-crime="shoplift"',disabled:S.age<12},{icon:"🏚️",name:"Burglary",detail:"Medium reward · Risky",attr:'data-crime="burglary"',disabled:S.age<16},{icon:"🚘",name:"Steal a vehicle",detail:"High reward · High risk",attr:'data-crime="theft"',disabled:S.age<18},{icon:"🏦",name:"Attempt a heist",detail:"Major reward · Severe risk",attr:'data-crime="heist"',disabled:S.age<18}])}</div>`}
+ <div class="world-panel"><h3>Personal reputation</h3>${wMetric("Karma",w.karma)}${wMetric("Notoriety",w.wanted)}
+ <p class="world-muted">Good deeds improve karma. A criminal record affects your future.</p></div></div>`;
+};
+const worldsLandlord=function worldsLandlord(){
+ const w=ensureWorld(),owned=S.assets.filter(a=>a.type==="Property");
+ return `<div class="world-wrap">${wTitle("Landlord & Real Estate","Own houses, find tenants, collect rent, and renovate properties.")}
+ <div class="world-feature"><div>🏡</div><section><strong>${owned.length} properties</strong><p>${cash(owned.reduce((n,a)=>n+(a.value??a.cost),0))} property value</p><small>${cash(owned.filter(a=>a.tenant).reduce((n,a)=>n+(a.rent*12),0))} estimated rent per year</small></section></div>
+ <div class="world-panel"><h3>Your property portfolio</h3>
+ ${owned.length?owned.map(a=>{const idx=S.assets.indexOf(a);return `<div class="world-estate"><strong>🏠 ${esc(a.name)}</strong><small>Value ${cash(a.value??a.cost)} · ${a.tenant?`Tenant pays ${cash(a.rent)}/month`:"Currently vacant"}</small><div class="extra-actions"><button class="btn primary" data-estate="${a.tenant?"evict":"rent"}" data-index="${idx}">${a.tenant?"End tenancy":"Find tenant"}</button><button class="btn" data-estate="renovate" data-index="${idx}">Renovate</button><button class="btn danger" data-sell="${idx}">Sell</button></div></div>`}).join(""):'<div class="world-empty">No properties yet. Purchase your first home in Assets & Finances.</div>'}
+ <button class="large-cta" data-goto="finances">🏦 Browse houses in Assets & Finances ›</button></div></div>`;
+};
+const worldsPortfolio=function worldsPortfolio(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Investments & Luxury","Explore markets, collectible items, and expensive dreams.")}
+ <div class="world-panel"><h3>Alternative investments</h3><div class="world-stats"><div><b>${cash(w.crypto)}</b><small>Digital assets</small></div><div><b>${cash(w.bonds)}</b><small>Government bonds</small></div><div><b>${cash(S.extras.invested)}</b><small>Index fund</small></div></div>
+ ${wActions([{icon:"🪙",name:"Buy digital assets",detail:"Invest $5,000 · Volatile",attr:'data-worldfinance="buycrypto" data-amount="5000"',disabled:S.money<5000||S.age<18},{icon:"🏦",name:"Buy bonds",detail:"Invest $5,000 · Earn interest",attr:'data-worldfinance="buybonds" data-amount="5000"',disabled:S.money<5000||S.age<18},{icon:"💰",name:"Sell digital assets",detail:"Cash out",attr:'data-worldfinance="sellcrypto"',disabled:!w.crypto},{icon:"💳",name:"Redeem bonds",detail:"Cash out",attr:'data-worldfinance="sellbonds"',disabled:!w.bonds}])}
+ <p class="world-muted">Investments fluctuate each year. This is fictional money, not a real trading platform.</p></div>
+ <div class="world-panel"><h3>Luxury marketplace</h3><div class="world-jobs">${worldLuxury.map(q=>`<div class="world-job"><div class="world-job-icon">${q.icon}</div><div class="world-job-copy"><strong>${q.name}</strong><small>${cash(q.price)}</small></div><button class="btn primary" data-worldfinance="luxury" data-amount="${q.id}" ${S.money<q.price||S.age<18?"disabled":""}>BUY</button></div>`).join("")}</div></div>
+ <div class="world-panel"><h3>Collectibles & heirlooms</h3>${w.inventory.length?w.inventory.map((q,i)=>`<div class="world-job"><div class="world-job-icon">${q.icon}</div><div class="world-job-copy"><strong>${esc(q.name)}</strong><small>Estimated value ${cash(q.value)}</small></div><button class="btn" data-worldfinance="sellheirloom" data-amount="${i}">SELL</button></div>`).join(""):'<p class="world-muted">You have no collectibles yet.</p>'}
+ ${wActions([{icon:"🔎",name:"Find an heirloom",detail:"Look for rare family treasures",attr:'data-worldfinance="findheirloom"'},{icon:"🎟️",name:"Play lottery",detail:"$100 per ticket",attr:'data-worldfinance="lottery"',disabled:S.money<100},{icon:"🤲",name:"Donate to charity",detail:"Give $1,000",attr:'data-worldfinance="donate"',disabled:S.money<1000}])}
+ </div></div>`;
+};
+const worldsWellness=function worldsWellness(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Health & Wellness","Take charge of your physical and mental wellbeing.")}
+ <div class="world-feature"><div>🩺</div><section><strong>${w.conditions.length?"Your health needs attention":"Looking healthy"}</strong><p>${w.conditions.length?w.conditions.join(", "):"No known medical conditions"}</p><small>Visit a doctor to check for additional conditions.</small></section></div>
+ <div class="world-panel">${wMetric("Health",S.stats.health)}${wMetric("Happiness",S.stats.happiness)}${wMetric("Vitality",w.vitality)}${wMetric("Stress",S.extras.stress)}
+ ${wActions([{icon:"🩺",name:"Checkup",detail:"Visit a doctor · $300",attr:'data-health="checkup"',disabled:S.money<300},{icon:"💊",name:"Treat condition",detail:"Medical care · $800",attr:'data-health="treat"',disabled:!w.conditions.length||S.money<800},{icon:"🧘",name:"Mindfulness",detail:"Reduce stress",attr:'data-health="meditate"'},{icon:"🥗",name:"Healthy diet",detail:"Improve health and energy",attr:'data-health="diet"'}])}</div></div>`;
+};
+const worldsCreative=function worldsCreative(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Creative Studio","Build a catalog of original work and earn ongoing royalties.")}
+ <div class="world-feature"><div>🎬</div><section><strong>${w.releases.length} releases</strong><p>${cash(w.royalties)} estimated recurring royalties</p><small>Creative skill: ${S.extras.creativity}/100</small></section></div>
+ <div class="world-panel">${wMetric("Creativity",S.extras.creativity)}<h3>Produce a project</h3>
+ <div class="world-jobs">${worldArts.map(q=>`<div class="world-job"><div class="world-job-icon">${q.icon}</div><div class="world-job-copy"><strong>${q.name}</strong><small>Budget ${cash(q.cost)} · Age ${q.min}+</small></div><button class="btn primary" data-art="${q.id}" ${S.age<q.min||S.money<q.cost?"disabled":""}>CREATE</button></div>`).join("")}</div></div>
+ <div class="world-panel"><h3>Production history</h3>${w.releases.length?w.releases.slice().reverse().slice(0,15).map(q=>`<div class="world-job"><div class="world-job-icon">🎞️</div><div class="world-job-copy"><strong>${esc(q.name)}</strong><small>Age ${q.year} · Gross ${cash(q.pay)}</small></div></div>`).join(""):'<p class="world-muted">Your projects will be listed here.</p>'}</div></div>`;
+};
+const worldsCommunity=function worldsCommunity(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Community Builder","Build a community around your ideas and traditions.")}
+ <div class="world-feature"><div>🕯️</div><section><strong>${w.cult?"Community Founder":"No active community"}</strong><p>${w.followersCult.toLocaleString()} members</p><small>Community influence ${w.cult}</small></section></div>
+ <div class="world-panel"><p class="world-muted">Build a community of followers and organize gatherings. Your community receives fictional donations as it grows.</p>
+ ${wActions([{icon:"🤝",name:"Create community",detail:"Startup cost $3,000",attr:'data-worldfinance="foundgroup"',disabled:!!w.cult||S.age<18||S.money<3000},{icon:"📣",name:"Organize an event",detail:"$900 to host a gathering",attr:'data-worldfinance="growgroup"',disabled:!w.cult||S.money<900},{icon:"🤲",name:"Donate to charity",detail:"Give back · $1,000",attr:'data-worldfinance="donate"',disabled:S.money<1000}])}</div></div>`;
+};
+const worldsLegacy=function worldsLegacy(){
+ const w=ensureWorld();
+ return `<div class="world-wrap">${wTitle("Family Legacy","Build a family line and remember those who came before.")}
+ <div class="world-feature"><div>🧬</div><section><strong>Generation ${w.generations}</strong><p>${S.children} children · ${cash(wealth()+w.crypto+w.bonds)} estate</p><small>Carry on as an adult child after your current life ends.</small></section></div>
+ <div class="world-panel"><h3>Family tree</h3><div class="world-estate"><strong>👤 ${esc(S.name)}</strong><small>Age ${S.age} · Current generation</small></div>${S.people.filter(p=>p.type==="Child").map(p=>`<div class="world-estate"><strong>🧒 ${esc(p.name)}</strong><small>Age ${p.age} · ${p.alive?"Alive":"Deceased"} · Potential heir</small></div>`).join("")}
+ ${w.legacy.slice().reverse().map(a=>`<div class="world-estate"><strong>🕊️ ${esc(a.name)}</strong><small>Generation ${a.generation} · ${a.age} years · Estate ${cash(a.estate)}</small></div>`).join("")}
+ </div>
+ <div class="world-panel"><h3>Time rewind</h3><p class="world-muted">Undo your last Age Up and explore a different choice. Each life can rewind two times.</p><div class="world-stats"><div><b>${w.snapshots?.length||0}</b><small>Saved years</small></div><div><b>${2-(w.rewinds||0)}</b><small>Rewinds left</small></div></div>
+ <button class="btn primary" data-legacy="rewind" ${(w.snapshots?.length||0)<1||(w.rewinds||0)>=2?"disabled":""}>⏪ Rewind one year</button>
+ </div>
+ <div class="world-panel"><h3>Culture & relocation</h3><p class="world-muted">Start a new chapter somewhere else.</p><div class="extra-actions"><button class="btn" data-legacy="emigrate" ${S.age<18||S.money<2500?"disabled":""}>🌍 Move to another country · $2,500</button><button class="btn" data-legacy="adopt" ${S.age<21||S.money<4500?"disabled":""}>🍼 Adopt a child · $4,500</button><button class="btn" data-legacy="divorce" ${!S.married?"disabled":""}>💔 File for divorce</button></div></div></div>`;
+};
+const worldArtAction=function worldArtAction(id){
+ const w=ensureWorld(),q=worldArts.find(x=>x.id===id);if(!q||S.age<q.min||!worldSpend(q.cost))return;
+ if(!consume("art-"+id)){S.money+=q.cost;return;}
+ const success=Math.random()<Math.min(.88,(S.extras.creativity+S.stats.smarts/2)/140);
+ const revenue=success?rand(q.cost*2,q.cost*18):rand(0,Math.round(q.cost*.75));
+ S.money+=revenue;w.royalties+=Math.round(revenue*.025);w.releases.push({name:q.name,year:S.age,pay:revenue});
+ extraStat("creativity",rand(4,8));w.fame=clamp(w.fame+(success?rand(5,12):0));
+ worldNotify(q.icon,success?"Creative hit":"Creative project completed",`Your ${q.name.toLowerCase()} generated ${cash(revenue)} in sales.`,success?12:3);
+ save();render();
+};
+const worldLegacyAction=function worldLegacyAction(type){
+ const w=ensureWorld();
+ if(type==="rewind"){
+  if(!w.snapshots?.length||(w.rewinds||0)>=2)return;
+  if(!confirm("Rewind your last year? Progress after that year will be lost."))return;
+  const list=w.snapshots.slice(),prev=list.pop(),used=(w.rewinds||0)+1;
+  S=prev;enhanceInit();const restored=ensureWorld();restored.snapshots=list;restored.rewinds=used;
+  eventModal=null;deadModal=false;tab="life";worldNotify("⏪","A second chance","You rewound one year. Choose your next steps differently.",2);save();render();return;
+ }
+ if(type==="emigrate"){
+  if(S.age<18||!worldSpend(2500))return;
+  const opts=places.filter(p=>p!==S.place);S.place=pick(opts);
+  worldNotify("✈️","A fresh start",`You moved to ${S.place}!`,12);
+ }else if(type==="adopt"){
+  if(S.age<21||!worldSpend(4500))return;
+  const p=makePerson("Child",0);p.age=0;p.closeness=90;S.people.push(p);S.children++;
+  worldNotify("🍼","Family grows",`You adopted ${p.name}!`,16);achievement("parent");
+ }else if(type==="divorce"){
+  if(!S.married||!confirm("End your marriage?"))return;
+  const p=S.people.find(q=>q.type==="Partner"&&q.alive);
+  if(p)p.type="Former partner";
+  S.married=false;S.money-=Math.max(0,Math.round(S.money*.24));worldNotify("💔","Divorce finalized","You and your partner ended your marriage.",-15);
+ }
+ save();render();
+};
+const worldContinuation=function worldContinuation(){
+ if(!S||S.alive)return;
+ const candidate=S.people.find(q=>q.type==="Child"&&q.alive);
+ if(!candidate){notice("No living child to continue as.",true);return;}
+ const old=S,original=ensureWorld(),record={name:old.name,age:old.age,estate:wealth()+original.crypto+original.bonds,generation:original.generations};
+ const legacy=[...original.legacy,record];const heir=candidate.name,inherited=Math.max(0,Math.round(record.estate*.65));
+ newLife(heir,pick(["Male","Female"]),old.place);
+ S.age=candidate.age;S.money=inherited;
+ S.stats.health=rand(55,94);S.stats.happiness=rand(42,85);S.stats.smarts=rand(40,90);
+ const w=ensureWorld();w.legacy=legacy;w.generations=original.generations+1;w.royalBorn=original.royalBorn;
+ log("🧬","Next generation",`${heir} inherited ${cash(inherited)} and continues the family legacy.`);
+ achievement("parent");worldRecord("Second Generation");tab="life";deadModal=false;eventModal=null;save();render();
+};
+const worldRender=function worldRender(){
+ worldRender._base();
+ if(!S)return;
+ const modal=document.querySelector(".modal");
+ if(modal&&deadModal&&S.people.some(p=>p.type==="Child"&&p.alive)){
+  const child=S.people.find(p=>p.type==="Child"&&p.alive);
+  const btn=modal.querySelector("[data-new]");
+  if(btn)btn.insertAdjacentHTML("beforebegin",`<button class="start-btn world-heir" data-legacy="continue">🧬 Continue as ${esc(child.name)}</button>`);
+ }
+ const main=document.querySelector(".subpage");
+ if(worldTabs.includes(tab)&&main){
+  const layouts={worlds:worldsHub,special:worldsCareers,fame:worldsFame,crime:worldsCrime,landlord:worldsLandlord,portfolio:worldsPortfolio,wellness:worldsWellness,creative:worldsCreative,community:worldsCommunity,legacy:worldsLegacy};
+  main.innerHTML=`<div class="subhead"><button class="back-button" data-goto="worlds" aria-label="Back to Worlds">‹</button>${tab==="worlds"?"Explore Life":worldTitles[tab]}</div>${layouts[tab]()}`;
+ }
+ const nav=document.querySelector(".menu-panel");
+ if(nav){
+  const reset=nav.querySelector(".menu-reset");
+  if(reset)reset.insertAdjacentHTML("beforebegin",`<button data-goto="worlds"><span>🌎</span>LifePath Worlds</button>
+ <button data-goto="special"><span>🎭</span>Special Careers</button>
+ <button data-goto="fame"><span>⭐</span>Fame & Social Media</button>
+ <button data-goto="crime"><span>⚖️</span>Crime & Justice</button>
+ <button data-goto="legacy"><span>🧬</span>Family Legacy</button>
+ <button data-goto="portfolio"><span>💎</span>Investments & Luxury</button>`);
+ }
+ const star=document.querySelector(".header-star");
+ if(star){star.outerHTML='<button class="header-world-btn" data-goto="worlds" title="Explore more gameplay">🌎 WORLD</button>';}
+ const promo=document.querySelector(".promo-strip .promo-pill");
+ if(promo){promo.outerHTML='<button class="promo-world-btn" data-goto="worlds">🌎 Explore 9 game modes ›</button>';}
+ const money=document.querySelector(".money-detail strong");
+ if(money){const w=ensureWorld();money.title="Net worth: "+cash(wealth()+w.crypto+w.bonds);}
+};
+worldRender._base=render;render=worldRender;
+const worldClick=function worldClick(e){
+ const el=e.target.closest("button");if(!el||!S)return;
+ const d=el.dataset;
+ let handled=false;
+ if("special"in d){handled=true;specialAction(d.special,d.id);}
+ else if("social"in d){handled=true;socialAction(d.social);}
+ else if("crime"in d){handled=true;crimeAction(d.crime);}
+ else if("prison"in d){handled=true;prisonAction(d.prison);}
+ else if("estate"in d){handled=true;worldAssetAction(d.estate,d.index);}
+ else if("worldfinance"in d){handled=true;worldFinanceAction(d.worldfinance,d.amount);}
+ else if("health"in d){handled=true;worldHealthAction(d.health);}
+ else if("art"in d){handled=true;worldArtAction(d.art);}
+ else if("legacy"in d){handled=true;d.legacy==="continue"?worldContinuation():worldLegacyAction(d.legacy);}
+ if(handled){e.stopImmediatePropagation();e.preventDefault?.();}
+};
+$('#app').addEventListener('click',worldClick,true);
+const baseWorldNewLife=newLife;
+newLife=function(name,gender,place){baseWorldNewLife(name,gender,place);const w=ensureWorld();w.royalBorn=Math.random()<.025;if(w.royalBorn){w.courtStanding=70;worldNotify('👑','A remarkable birth','You were born into a royal family!');save();render();}};
+const baseWorldDie=die;
+die=function(){if(S&&S.alive){const w=ensureWorld();w.finalEstate=wealth()+w.crypto+w.bonds;}baseWorldDie();};
+const baseYearWorld=ageUp;
+ageUp=function(){if(!S||!S.alive||eventModal)return;const w=ensureWorld();const snapshot=JSON.parse(JSON.stringify(S));if(snapshot.extras?.world)delete snapshot.extras.world.snapshots;w.snapshots??=[];w.rewinds??=0;w.snapshots.push(snapshot);if(w.snapshots.length>3)w.snapshots.shift();baseYearWorld();save();};
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
