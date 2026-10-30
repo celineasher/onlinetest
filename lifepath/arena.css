@@ -1,0 +1,38 @@
+
+/* LifePath Arena — original turn-based fighter visuals */
+.lp-arena{background:#edf4f8;min-height:100%;animation:lp-page-in .35s var(--lp-ease) both;padding-bottom:25px}
+.lp-arena-stage{position:relative;padding:24px 14px 19px;background:radial-gradient(ellipse at 50% 13%,#326b9b,#06385f 76%);overflow:hidden}
+.lp-arena-stage:before{content:'';position:absolute;left:-10%;right:-10%;bottom:-50px;height:110px;border:8px solid #fff2;border-radius:50%;transform:rotate(-3deg)}
+.lp-arena-top{display:flex;justify-content:space-between;gap:8px;position:relative;z-index:1}
+.lp-fighter-card{width:47%;border:1px solid #ffffff4a;background:#ffffff1c;border-radius:15px;padding:12px;text-align:center;color:#fff;box-shadow:0 3px 15px #0002}
+.lp-fighter-emoji{font-size:49px;display:block;line-height:1.15;filter:drop-shadow(0 5px 4px #09253b99);animation:lp-float 2.6s ease-in-out infinite}
+.lp-fighter-card:nth-child(2) .lp-fighter-emoji{animation-delay:.8s}
+.lp-fighter-card strong{display:block;color:#fff;font-size:12px;margin-top:7px;font-weight:1000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lp-fighter-card small{color:#c7e5fa;font-size:10px}
+.lp-arena-versus{position:absolute;top:47px;left:50%;transform:translateX(-50%);z-index:2;font-weight:1000;font-size:21px;color:#fcca65;font-family:'Barlow Condensed',Impact,sans-serif;text-shadow:0 2px #0008}
+.lp-arena-bar{height:9px;background:#0a2744;border-radius:8px;overflow:hidden;margin-top:8px;border:1px solid #ffffff3b}
+.lp-arena-bar>i{display:block;height:100%;background:linear-gradient(90deg,#41e694,#06b959);transition:width .35s ease}
+.lp-arena-bar.stamina>i{background:linear-gradient(90deg,#63d6fc,#158eda)}
+.lp-arena-label{font-size:9px;color:#dbeef9;text-align:left;margin:6px 0 0}
+.lp-arena-round{text-align:center;color:#f7e8af;font-weight:1000;font-size:12px;margin:13px 0 0;position:relative}
+.lp-arena-message{background:#fff;border-bottom:3px solid #d7e8f2;padding:17px 15px;text-align:center}
+.lp-arena-message h2{color:#0d5992;font-weight:1000;font-size:17px;margin:0}
+.lp-arena-message p{color:#7591a8;font-size:11px;margin:5px 0 0}
+.lp-arena-log{padding:11px 15px;background:#fff8e6;border-bottom:1px solid #eadba6}
+.lp-arena-log p{font-size:11px;color:#746449;margin:4px 0;line-height:1.4}
+.lp-arena-log p:last-child{font-weight:900;color:#735e2c}
+.lp-arena-choices{padding:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lp-arena-action{border:1px solid #c9dcec;border-radius:14px;background:#fff;box-shadow:0 4px 0 #dce8f1;padding:12px;min-height:94px;display:flex;align-items:flex-start;flex-direction:column;text-align:left;color:#135a8d;transition:transform .18s var(--lp-bounce),box-shadow .18s!important}
+.lp-arena-action:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #dce8f1}
+.lp-arena-action:disabled{opacity:.36}
+.lp-arena-action span{font-size:24px}
+.lp-arena-action b{font-weight:1000;font-size:12px;margin-top:3px}
+.lp-arena-action small{font-size:10px;color:#7b96a8}
+.lp-arena-action.special{background:#fff5e6;border-color:#f1d8ad}
+.lp-arena-callout{background:#fff;border:1px solid #dae8f2;border-radius:12px;margin:15px;padding:13px;text-align:center}
+.lp-arena-callout strong{display:block;color:#0d5b92;font-size:17px;font-weight:1000}
+.lp-arena-callout p{font-size:11px;color:#7791a4;line-height:1.5;margin:6px 0}
+.lp-arena-callout button{background:#05a53a;color:#fff;font-weight:1000;border:0;border-radius:11px;padding:12px 16px;width:100%;margin-top:9px;box-shadow:0 3px 0 #067a2a}
+.lp-arena-callout button:disabled{opacity:.4}
+.lp-arena-trophy{font-size:42px;animation:lp-pop .65s var(--lp-bounce) both}
+.lp-arena-menu-btn{width:100%;padding:15px;display:flex;align-items:center;justify-content:space-between;color:#105d98;font-weight:1000;background:#f5fbff;border:1px solid #cadde9;border-radius:10px}
