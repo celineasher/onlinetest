@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ee3613">
-<title>LifePath — Play the Life Simulator (Fixed)</title>
+<title>LifePath Classic — Life Simulator</title>
 <style>
 /* LifePath — original browser life simulator */
 :root{--green:#5baa4f;--greenDark:#3e913c;--lightGreen:#edf7eb;--paper:#ffffff;--line:#e9ece9;--bg:#e9ecea;--ink:#26342b;--muted:#88918c;--blue:#408ecd;--red:#e96b65;--purple:#aa7ad9;--gold:#d7a549}
@@ -341,6 +341,7 @@ body{background:radial-gradient(circle at 75% 12%,#fcf0d3,#d8e9f3 48%,#d0dae4)}
 .world-panel .world-jobs+.world-muted{margin-top:11px}.world-panel .large-cta{margin-top:13px}
 .final-ribbon{border:1px solid #ffd57a;background:linear-gradient(90deg,#fff8dc,#fff1b8);border-radius:11px;padding:13px;margin:12px 0;text-align:center;color:#a16706}.final-ribbon strong{font-size:14px}.quickstart-box{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 6px;padding:9px 11px;border:1px solid #ddedf4;border-radius:10px;background:#f3f9fc}.quickstart-box label{color:#42708a;font-weight:850;font-size:11px}.quickstart-box select{border:1px solid #cadde8;border-radius:8px;background:white;padding:9px;color:#245d7b;font-size:11px;font-weight:800;max-width:164px}
 </style>
+<link rel="stylesheet" href="./modern-classic.css?v=2">
 </head>
 <body>
 <div id="app"></div>
@@ -1866,6 +1867,136 @@ const beforeFastStartScreen=createScreen;
 createScreen=function(){return beforeFastStartScreen().replace('</form>','<div class="quickstart-box"><label for="startingAge">Start age</label><select id="startingAge"><option value="0">Birth · classic</option><option value="18">18 · quick start</option><option value="30">30 · established</option></select></div></form>');};
 const beforeFinalRender=render;
 render=function(){beforeFinalRender();if(!S||S.alive)return;const modal=document.querySelector('.modal');if(modal){const start=modal.querySelector('[data-new]');if(start)start.insertAdjacentHTML('beforebegin','<div class="final-ribbon">🎗️ <strong>'+esc(finalRibbon())+'</strong><div>Your life’s lasting legacy</div></div>');}};
+
+/* LifePath Classic 2 — navigation driven occupation experience */
+let lpOccupationView="menu";
+let lpCareerPick=null;
+const lpSection=(label)=>'<div class="lp-section">'+label+'</div>';
+const lpRow=(icon,name,sub,attrs,featured=false)=>'<button class="lp-row'+(featured?' lp-feature':'')+'" '+attrs+'><span class="lp-row-icon">'+icon+'</span><span class="lp-row-text"><span class="lp-row-name">'+name+'</span><span class="lp-row-description">'+sub+'</span></span><span class="lp-row-arrow">›</span></button>';
+const lpGoBack=()=>'<div class="lp-subnav"><button data-occup="menu">‹ All occupation options</button></div>';
+const lpSummary=(title,description)=>'<div class="lp-summary"><h2>'+title+'</h2><p>'+description+'</p></div>';
+const lpOccupationHome=()=>'<div class="lp-list">'+
+ lpSection('Recommended')+
+ lpRow('📜','Career Coaching','Get guidance for your next job','data-occup="recruiter"',true)+
+ lpRow('🎓','Academic Opportunities','Build qualifications for your dream career','data-occup="education"',true)+
+ lpSection('All')+
+ lpRow('🎓','Education','Go back to school','data-occup="education"')+
+ lpRow('🥊','Fight','Enter the professional fighting scene','data-occup="fight"')+
+ lpRow('🧢','Freelance Gigs','Earn some money on the side','data-occup="gigs"')+
+ lpRow('📞','Job Recruiter','Discover a career opportunity','data-occup="recruiter"')+
+ lpRow('💵','Jobs','Browse full-time job listings','data-occup="jobs"')+
+ lpRow('🛡️','Military','Serve and advance your career','data-occup="military"')+
+ lpRow('🕒','Part-Time Jobs','Browse flexible, hourly work','data-occup="parttime"')+
+ lpRow('🎩','Special Careers','Explore extraordinary careers','data-goto="special"')+
+ '</div>';
+const lpOccupationDetails=()=>{
+ if(lpOccupationView==="menu")return lpOccupationHome();
+ if(lpOccupationView==="jobs")return lpGoBack()+lpBaseCareerTab();
+ if(lpOccupationView==="education"){
+  const w=ensureYouth();
+  return '<div class="lp-detail">'+lpGoBack()+lpSummary('🎓 Education','Current education: '+esc(education()))+
+   '<div class="lp-info"><strong>'+esc(school())+'</strong><p>Academic performance: '+w.grades+'/100. Smarts: '+S.stats.smarts+'/100.</p></div>'+
+   lpRow('📖','Study harder','Improve your academic performance','data-youth="study"')+
+   lpRow('🧪','School & Youth','Clubs, scholarships, and driving lessons','data-goto="youth"')+
+   (S.age>=18&&!S.degree&&S.collegeEnd===null?'<div class="lp-inline-actions"><button class="btn primary" data-college>Enroll in university</button></div>':'')+
+   '<p class="lp-footnote">Education can unlock better job opportunities and specialty careers.</p></div>';
+ }
+ if(lpOccupationView==="fight"){
+  const w=ensureWorld();const active=w.special.id==="fighter";
+  return '<div class="lp-detail">'+lpGoBack()+lpSummary('🥊 Professional Fighting','Train, win fights, and compete for championship titles.')+
+   '<div class="lp-info"><strong>'+ (active?'Current fighter':'Start a fighting career')+'</strong><p>Your health is '+S.stats.health+'/100. '+(active?'Fighting skill: '+w.special.skill+'/100':'Enter the sport from age 18.')+'</p></div>'+
+   (active?lpRow('🥋','Train your technique','Improve your combat skills','data-careermode="fightstyle"')+
+    lpRow('🏆','Challenge for a title','Compete for a championship','data-careermode="titlefight"')+
+    lpRow('🥊','Career dashboard','View your level and earnings','data-goto="special"'):
+    lpRow('🥊','Join professional fighting','Start a special career','data-special="join" data-id="fighter" '+(S.age<18?'disabled':'')))+'</div>';
+ }
+ if(lpOccupationView==="gigs"||lpOccupationView==="parttime"){
+  return '<div class="lp-detail">'+lpGoBack()+lpSummary(lpOccupationView==="gigs"?'🧢 Freelance Gigs':'🕒 Part-Time Jobs','Earn extra income through flexible work.')+
+   lpRow('🛠️','Odd jobs','Take on a short freelance job','data-action="gig"')+
+   lpRow('📦','Temporary shifts','Work a short-term contract','data-relief="temp" '+(S.age<18?'disabled':''))+
+   lpRow('🤝','Professional networking','Build connections for future jobs','data-action="network" '+(S.age<18?'disabled':''))+
+   '<p class="lp-footnote">Work opportunities and rewards depend on age, skill, and your choices.</p></div>';
+ }
+ if(lpOccupationView==="recruiter"){
+  const filtered=jobs.filter(j=>S.age>=j.age&&S.stats.smarts>=j.smart&&(!j.degree||S.degree));
+  return '<div class="lp-detail">'+lpGoBack()+lpSummary('📞 Job Recruiter','Find jobs that match your qualifications.')+
+   lpSection(filtered.length+' matching positions')+
+   (filtered.length?filtered.slice(0,12).map(j=>lpRow(j.icon,esc(j.name),cash(j.salary)+'/year · '+(j.degree?'Degree required':'No degree required'),'data-apply="'+j.id+'"')).join(''):'<div class="lp-info">No suitable jobs yet. Study, age up, or raise your smarts to unlock opportunities.</div>')+
+   lpRow('💵','See all job listings','View all available careers','data-occup="jobs"')+'</div>';
+ }
+ if(lpOccupationView==="military"){
+  const w=ensureWorld(),active=w.special.id==="military";
+  return '<div class="lp-detail">'+lpGoBack()+lpSummary('🛡️ Military Service','Develop your discipline and complete assignments.')+
+   '<div class="lp-info">Current health: '+S.stats.health+'/100 · Career status: '+(active?'Enlisted':'Civilian')+'</div>'+
+   (active?lpRow('🎖️','Complete an operation','Advance your service record','data-careermode="operation"')+
+     lpRow('📈','Career progression','View your service history','data-goto="special"'):
+     lpRow('🛡️','Enlist','Start a military career','data-special="join" data-id="military" '+(S.age<18?'disabled':'')))+'</div>';
+ }
+ return lpOccupationHome();
+};
+const lpBaseCareerTab=careerTab;
+careerTab=lpOccupationDetails;
+const lpCareerCatalog=worldsCareers;
+const lpCareerOrder=["actor","astronaut","entrepreneur","dealer","mafia","model","producer","musician","politician","athlete","street","director","fighter","spy","military","influencer","pilot","royal"];
+const lpCareerDetailScreen=(entry)=>{
+ const w=ensureWorld(),current=getCareer(),active=current?.id===entry.id;
+ return '<div class="lp-detail">'+
+ lpGoBack().replace('data-occup="menu"','data-career-detail="back"').replace('All occupation options','Special careers')+
+ '<div class="lp-career-top"><span>'+entry.icon+'</span><div><h2>'+esc(entry.name)+'</h2><p>Starting salary '+cash(entry.base)+' / year · Minimum age '+entry.min+'</p></div></div>'+
+ '<div class="lp-info"><strong>'+(active?'Current career':'Career opportunity')+'</strong><p>'+(S.age<entry.min?'This career unlocks at age '+entry.min+'.':active?'Your career is active. Train, work, and advance through the ranks.':'Apply to start this career. Improve your skills to earn higher pay and reach new milestones.')+'</p></div>'+
+ (active?
+ lpRow('🏋️','Practice & train','Improve your career skill','data-special="train"')+
+ lpRow('💼',esc(entry.basic),'Perform your regular duties','data-special="work"')+
+ lpRow('🏆',esc(entry.big),'Attempt a major career challenge','data-special="big"')+
+ lpRow('📃','Negotiate a contract','Unlock higher annual income','data-special="contract"')+
+ '<div class="lp-inline-actions"><button class="btn danger" data-special="leave">Leave this career</button></div>':
+ lpRow('✅','Start this career','Apply and begin working','data-special="join" data-id="'+entry.id+'" '+(S.age<entry.min?'disabled':'')))+
+ '<div class="lp-info">Current fame: '+w.fame+'/100. Skill: '+w.special.skill+'/100.</div>'+
+ '</div>';
+};
+worldsCareers=function(){
+ const current=worldCareers.find(c=>c.id===lpCareerPick);
+ if(current)return lpCareerDetailScreen(current);
+ const arranged=[...lpCareerOrder.map(id=>worldCareers.find(q=>q.id===id)).filter(Boolean),...worldCareers.filter(q=>!lpCareerOrder.includes(q.id))];
+ return '<div class="lp-career-menu lp-list">'+
+ lpSection('Your career paths')+
+ (getCareer()?lpRow(getCareer().icon,'Current: '+esc(getCareer().name),'View your existing career','data-career-detail="'+getCareer().id+'"',true):'')+
+ lpSection('All special careers')+
+ arranged.map(q=>lpRow(q.icon,esc(q.name),'Explore the '+esc(q.name.toLowerCase())+' career','data-career-detail="'+q.id+'"')).join('')+
+ '</div>';
+};
+const lpPreviousRender=render;
+render=function(){
+ lpPreviousRender();
+ if(!S)return;
+ const header=document.querySelector('.subhead');
+ if(header){
+  const names={career:{"menu":"OCCUPATION","jobs":"JOBS","education":"EDUCATION","fight":"FIGHT","gigs":"FREELANCE GIGS","parttime":"PART-TIME JOBS","recruiter":"JOB RECRUITER","military":"MILITARY"}};
+  const newTitle=tab==='career'?names.career[lpOccupationView]:tab==='special'?(lpCareerPick?worldCareers.find(c=>c.id===lpCareerPick)?.name||'SPECIAL CAREERS':'SPECIAL CAREERS'):null;
+  if(newTitle){
+   const textNode=[...header.childNodes].find(x=>x.nodeType===3&&x.textContent.trim());
+   if(textNode)textNode.textContent=newTitle;
+   const back=header.querySelector('.back-button');
+   if(back&&tab==='special'){back.dataset.goto='career';}
+  }
+ }
+};
+$('#app').addEventListener('click',function(e){
+ const el=e.target.closest('button');
+ if(!el||!S)return;
+ if(el.dataset.occup){
+  e.stopImmediatePropagation();e.preventDefault();lpOccupationView=el.dataset.occup;tab='career';render();return;
+ }
+ if(el.dataset.careerDetail){
+  e.stopImmediatePropagation();e.preventDefault();lpCareerPick=el.dataset.careerDetail==='back'?null:el.dataset.careerDetail;tab='special';render();return;
+ }
+ if(tab==='special'&&lpCareerPick&&el.classList.contains('back-button')){
+  e.stopImmediatePropagation();e.preventDefault();lpCareerPick=null;render();return;
+ }
+ if(el.dataset.goto==='career')lpOccupationView='menu';
+ if(el.dataset.goto==='special')lpCareerPick=null;
+},true);
+
 S=load();enhanceInit();ensureWorld();if(S&&!S.alive)deadModal=true;
 try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
 })();
