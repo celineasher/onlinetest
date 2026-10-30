@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ee3613">
+<title>LifePath — Play the Life Simulator (Fixed)</title>
+<style>
+/* LifePath — original browser life simulator */
+:root{--green:#5baa4f;--greenDark:#3e913c;--lightGreen:#edf7eb;--paper:#ffffff;--line:#e9ece9;--bg:#e9ecea;--ink:#26342b;--muted:#88918c;--blue:#408ecd;--red:#e96b65;--purple:#aa7ad9;--gold:#d7a549}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(circle at 20% 20%,#f5faf3,#e6ebe7 68%);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer;touch-action:manipulation}button:disabled{opacity:.38;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f8cb63;outline-offset:2px}button:active:not(:disabled){filter:brightness(.96)}.hidden{display:none!important}
+#app{width:100%;height:100dvh;min-height:520px;display:grid;place-items:center}
+.shell{width:min(100%,466px);height:min(920px,calc(100dvh - 32px));min-height:500px;background:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 17px 66px rgba(30,64,38,.18);border:1px solid #d7dfd6;border-radius:17px}
+.game-header{flex:none;background:var(--green);color:white;min-height:61px;display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:3px solid #438b3e;position:relative;z-index:5}
+.brand{font-weight:1000;letter-spacing:-1.35px;font-size:25px;line-height:1;display:flex;gap:6px;align-items:center;color:#fff;text-shadow:0 2px 0 #31763363}
+.brand-icon{font-size:25px;filter:drop-shadow(0 2px 0 #347a3388)}
+.header-icon{border:0;background:#ffffff1c;color:#fff;border-radius:8px;width:40px;height:40px;display:grid;place-items:center;font-size:23px;font-weight:700}
+.header-icon:hover{background:#ffffff32}.top-right{display:flex;gap:5px;align-items:center}
+.header-star{width:35px;height:35px;border-radius:50%;border:2px solid #f7e492;background:#438e3f;color:#ffe39b;display:grid;place-items:center;font-size:21px;line-height:1}
+.character-strip{flex:none;background:#fdfefd;display:flex;align-items:center;gap:11px;padding:12px 15px 11px;border-bottom:1px solid #e9ece8;min-height:91px}
+.character-portrait{width:58px;height:58px;flex:none;border-radius:50%;display:grid;place-items:center;background:#edf5eb;border:2px solid #d4e9d0;font-size:39px;line-height:1}
+.character-detail{flex:1;min-width:0}.character-detail strong{display:block;font-size:17px;letter-spacing:-.35px;line-height:1.23;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.character-detail .secondary{font-size:12px;color:#758179;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.money-detail{text-align:right;flex:none;max-width:127px;line-height:1.3}.money-detail small{display:block;text-transform:uppercase;letter-spacing:.7px;color:#96a19a;font-size:9px;font-weight:800;margin-bottom:4px}.money-detail strong{font-size:14px;color:#3a9949;font-weight:850;overflow-wrap:anywhere}
+.app-main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#d8e5d7 transparent;background:#fff}
+.app-main.is-life{display:flex;flex-direction:column;overflow:hidden}.life-view{height:100%;min-height:0;display:flex;flex-direction:column}
+.diary-top{display:flex;align-items:center;justify-content:space-between;background:#f6f9f5;border-bottom:1px solid #ecf0ed;padding:7px 17px;color:#6f7b71;font-size:11px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.diary-top .badge-live{display:flex;align-items:center;gap:6px;color:#5a9b51}.badge-live:before{content:"";width:7px;height:7px;background:#68b658;border-radius:50%}
+.life-feed{padding:6px 15px 18px;overflow-y:auto;overscroll-behavior:contain;flex:1;scrollbar-width:thin;scrollbar-color:#dbe5d9 transparent;min-height:80px}
+.feed{display:flex;flex-direction:column;gap:0}
+.feed-row{padding:10px 0 12px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #edf0ed}
+.feed-icon{font-size:23px;line-height:1.25;width:28px;text-align:center;flex:none;padding-top:1px}
+.feed-main{min-width:0;flex:1}.feed-age{display:inline-block;border-radius:3px;padding:2px 6px;background:#eaf5e8;color:#448f3e;font-weight:850;font-size:10px;margin-bottom:5px}
+.feed-title{font-size:13.4px;font-weight:800;line-height:1.38;color:#2e3730;margin:0 0 2px}.feed-desc{font-size:12.5px;line-height:1.5;color:#6a746e;margin:0}.feed-row.is-latest{background:#f9fdf8;margin-inline:-6px;padding-inline:6px;border-radius:6px}
+.stats-dock{flex:none;padding:10px 17px 10px;background:white;border-top:1px solid #e5e9e5;box-shadow:0 -5px 20px #1d3a2008}
+.stat-line{display:grid;grid-template-columns:97px minmax(0,1fr) 36px;gap:9px;align-items:center;margin-bottom:7px}
+.stat-line:last-child{margin-bottom:0}.stat-top{display:contents}.stat-top .stat-label{font-size:11.7px;font-weight:800;color:#4d594f;white-space:nowrap}.stat-icon{display:inline-block;width:20px;text-align:center;font-size:12px}
+.stat-value{font-weight:800;text-align:right;font-size:11.7px;color:#5b655e}.progress{height:10px;background:#e6e9e6;border-radius:20px;overflow:hidden;grid-column:2;grid-row:auto;border:1px solid #dae1da}
+.progress-fill{height:100%;border-radius:18px;transition:width .23s ease}.stats-dock .progress{grid-row:1}.stats-dock .stat-value{grid-column:3}
+.bottom-nav{flex:none;height:76px;background:#f9fbf9;border-top:1px solid #e4e9e3;display:grid;grid-template-columns:1fr 1fr 1.15fr 1fr 1fr;align-items:stretch;padding-bottom:env(safe-area-inset-bottom);z-index:8;position:relative}
+.nav-button{border:0;background:transparent;min-width:0;color:#959c98;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:750;line-height:1.1;padding:7px 0}
+.nav-button:hover{background:#eaf4e9;color:#4a9c46}.nav-button.active{color:#4c9e43}.nav-emoji{font-size:23px;display:block;line-height:1.2;filter:grayscale(.25)}.nav-button.active .nav-emoji{filter:none}.nav-label{max-width:100%;white-space:nowrap;letter-spacing:-.25px}
+.nav-age{position:relative;display:flex;align-items:center;justify-content:center}
+.age-button{width:69px;height:69px;border-radius:100%;border:5px solid #fff;background:#5eb14f;color:#fff;font-size:43px;font-weight:400;line-height:1;box-shadow:0 2px 0 #3d8d38,0 5px 13px #23582b33;display:flex;align-items:center;justify-content:center;transform:translateY(-15px);transition:transform .1s,background .15s}
+.age-button:hover:not(:disabled){background:#4f9f48;transform:translateY(-17px) scale(1.03)}.age-button:active:not(:disabled){transform:translateY(-13px) scale(.97)}.age-button:disabled{background:#9ab69a}
+.age-caption{font-size:10px;letter-spacing:.3px;position:absolute;bottom:4px;color:#4a9445;font-weight:900;pointer-events:none}
+.subpage{padding:0 0 35px}.subhead{display:flex;align-items:center;gap:9px;min-height:53px;padding:11px 15px;background:#f6f8f5;border-bottom:1px solid var(--line);color:#3b483f;font-size:17px;font-weight:850}
+.back-button{background:transparent;border:0;font-size:27px;line-height:1;display:grid;place-items:center;width:31px;height:32px;color:#4e9f49;border-radius:7px}
+.card{background:#fff;border-bottom:6px solid #f4f7f3;padding:16px 16px 19px}.card:last-child{border-bottom:0}.card h2{font-size:15px;margin:0 0 12px;color:#33483a}.section-head{display:flex;gap:6px;align-items:center;justify-content:space-between;margin-bottom:10px}.section-head h2{margin:0}.section-head .hint{font-size:9px;color:#a5aea7;font-weight:800;letter-spacing:.4px}
+.section-intro{font-size:12px;color:#758278;line-height:1.5;margin:0 0 13px}.stack{display:flex;flex-direction:column;gap:0}.page-enter{animation:fade .16s ease}
+.actions{display:flex;flex-direction:column;gap:0}.action-card{border:0;border-top:1px solid #edf0ed;background:#fff;min-height:69px;display:grid;grid-template-columns:44px 1fr;column-gap:10px;text-align:left;align-items:center;padding:11px 0;width:100%}.action-card:hover:not(:disabled){background:#f6fbf4}.action-card:disabled{background:#fafbfa}.action-emoji{grid-column:1;grid-row:1 / 4;font-size:26px;width:39px;height:39px;background:#edf6eb;border-radius:10px;display:grid;place-items:center}.action-title{grid-column:2;grid-row:1;font-size:13.5px;font-weight:780;color:#344339;margin:0}.action-desc{grid-column:2;grid-row:2;font-size:11px;color:#8d9690;margin-top:2px}.action-price{grid-column:2;grid-row:3;font-size:9px;color:#3e9c44;font-weight:850;margin-top:3px}.action-price.locked{color:#a4a9a5}.action-price.free{color:#36a04c}
+.listing{display:flex;flex-direction:column;gap:0}.list-card{display:flex;align-items:center;gap:9px;border-top:1px solid #eef1ed;padding:13px 0;flex-wrap:wrap}.list-emoji{width:39px;height:39px;background:#edf6eb;display:grid;place-items:center;border-radius:9px;font-size:23px;flex:none}.list-main{flex:1;min-width:145px}.list-main h3{font-size:13px;font-weight:790;margin:0 0 2px}.list-main p{font-size:11px;color:#8a948c;margin:0;line-height:1.45}.list-actions{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end;max-width:100%}
+.btn{border:1px solid #cce6c6;background:#ecf7e9;color:#419041;padding:7px 11px;border-radius:6px;font-weight:800;font-size:11px;white-space:nowrap}.btn:hover:not(:disabled){background:#dbf0d7}.btn.primary{background:#59ad4e;border-color:#59ad4e;color:#fff}.btn.ghost{color:#7c8980;background:#f2f4f2;border-color:#ebeeeb}.btn.danger{color:#d35c55;background:#fff1ef;border-color:#f4d6d1}
+.tag{font-size:10px;color:#3a943d;background:#e9f7e9;border:1px solid #cce9ce;border-radius:5px;padding:5px 7px;font-weight:800}
+.detail-box{background:#f7faf7;border:1px solid #e4ebe2;padding:11px 13px;border-radius:8px;margin-bottom:12px}.detail-box strong{font-size:13px}.detail-box p{font-size:11.5px;color:#79857b;margin:4px 0 0}.relation-bar{height:7px;border-radius:6px;background:#e8ece8;margin-top:6px;overflow:hidden}.relation-bar>div{height:100%;background:#61b453;border-radius:5px}
+.empty{padding:20px 12px;text-align:center;font-size:12px;color:#89948b;background:#f8faf7;border-radius:7px}.empty-icon{font-size:28px;margin-bottom:5px}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:13px;background:#f7faf7;border:1px solid #e7eee6;border-radius:8px}.metric-label{font-size:10px;color:#849187;font-weight:700}.metric-value{font-size:18px;color:#37493c;font-weight:850;overflow-wrap:anywhere}.metric-value.sm{font-size:14px}
+.money-hero{background:#ebf5e7;border-bottom:1px solid #d8ead4;padding:18px 16px 19px}.money-hero .eyebrow{font-size:10px;color:#5a9b54;letter-spacing:1.1px;font-weight:850}.money-hero .big{font-weight:900;font-size:29px;color:#369542;letter-spacing:-.6px;margin:2px 0}.money-hero p{font-size:11px;color:#7a8b7e;margin:0}.toggle-row{display:flex;gap:6px;flex-wrap:wrap}.small-note{font-size:10px;color:#909c93;margin:10px 0 0}.achievement-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.achievement{border:1px solid #e7ede5;border-radius:8px;background:#f8faf8;padding:11px;opacity:.52}.achievement.unlocked{opacity:1;background:#eff8ec;border-color:#c3e5bb}.achievement strong{font-size:12px;display:block;margin:5px 0 2px}.achievement span{color:#849187;font-size:10px}
+.modal-layer{position:fixed;inset:0;z-index:30;background:#11251998;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto;backdrop-filter:blur(3px)}
+.modal{background:#fff;border-radius:11px;width:min(100%,398px);padding:0 19px 21px;border:1px solid #cddcc9;box-shadow:0 20px 90px #0f231950;overflow:hidden;animation:rise .2s ease}
+.modal-banner{background:#59a54e;color:#fff;text-align:center;font-size:14px;font-weight:900;letter-spacing:.4px;margin:0 -19px 17px;padding:11px}
+.modal-top{width:75px;height:75px;background:#eef7ec;border:2px solid #d4e8d0;border-radius:50%;display:grid;place-items:center;margin:0 auto 10px;font-size:43px}
+.modal .eyebrow{text-align:center;font-size:10px;color:#4d9d49;font-weight:800;letter-spacing:.7px;margin:0 0 4px}.modal h2{text-align:center;font-size:21px;letter-spacing:-.45px;margin:0 0 10px}.modal p{text-align:center;color:#6d7870;font-size:13px;line-height:1.55;margin:0 0 17px}
+.choice{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #dfebdc;background:#f7faf5;color:#324638;width:100%;border-radius:7px;margin:8px 0 0;padding:11px 13px;text-align:left;font-size:12.5px;font-weight:760}.choice:hover{background:#e9f6e5;border-color:#92c88b}.choice .arr{color:#4c9e48;font-weight:900;font-size:17px}
+.create-wrap{height:min(920px,calc(100dvh - 32px));min-height:500px;width:min(100%,466px);display:flex;align-items:center;justify-content:center;overflow-y:auto;background:linear-gradient(180deg,#61ae51 0,#61ae51 36%,#f7faf6 36%,#f7faf6 100%);border-radius:17px;box-shadow:0 20px 66px #2345292e;padding:22px}
+.create-card{width:100%;background:#fff;padding:24px 19px 20px;border-radius:10px;box-shadow:0 9px 28px #18472b28;border:1px solid #cfe2c8}
+.create-head{text-align:center;margin-bottom:20px}.create-head .logo-mark{font-size:48px;line-height:1;margin-bottom:7px}.create-head .create-brand{font-weight:1000;letter-spacing:-1.5px;color:#4c9d47;font-size:30px}.create-head h1{margin:5px 0 5px;font-size:20px;letter-spacing:-.5px}.create-head p{font-size:12px;line-height:1.5;color:#88958a;margin:0}
+.form-label{display:block;font-size:10px;color:#687b6b;text-transform:uppercase;font-weight:900;letter-spacing:.6px;margin-bottom:5px}.field{width:100%;padding:10px 11px;background:#fff;border:1px solid #dfe7dd;color:#2c3b30;border-radius:6px;margin-bottom:13px;outline:none}.field:focus{border-color:#70bb65;box-shadow:0 0 0 3px #b9e4b84a}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.start-btn{width:100%;margin:6px 0 0;padding:13px 12px;border:0;background:#59aa4c;color:#fff;font-size:14px;font-weight:850;border-radius:7px;box-shadow:0 3px 0 #428b39}.start-btn:hover{background:#499b40}.create-foot{margin:14px 0 0;text-align:center;color:#acb4ad;font-size:10px}
+.menu-cover{position:absolute;inset:61px 0 0;z-index:13;background:#10271988}.menu-panel{position:absolute;z-index:14;top:60px;left:0;bottom:0;width:78%;max-width:330px;background:#fff;box-shadow:9px 0 32px #0002;display:flex;flex-direction:column}.menu-title{font-size:13px;font-weight:900;color:#397f3c;padding:17px 16px;background:#f1f8ed;border-bottom:1px solid #e2efdc}.menu-panel button{background:transparent;border:0;text-align:left;display:flex;align-items:center;gap:13px;padding:13px 17px;font-weight:760;color:#4a594e;border-bottom:1px solid #f0f1ef}.menu-panel button:hover{background:#f4fbf3}.menu-panel .menu-reset{margin-top:auto;color:#a65b55;background:#fff6f4}
+.toast{position:fixed;z-index:70;bottom:105px;left:50%;transform:translateX(-50%);background:#263e2e;color:#fff;border-radius:8px;padding:11px 16px;box-shadow:0 10px 35px #0b200d3c;font-size:12px;max-width:calc(100vw - 30px);white-space:normal}.toast.bad{background:#a34742}
+@keyframes fade{from{opacity:.75}to{opacity:1}}@keyframes rise{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:600px){#app{min-height:100dvh}.shell,.create-wrap{height:100dvh;min-height:0;width:100%;max-width:none;border:0;border-radius:0;box-shadow:none}.modal-layer{padding:15px}.app-main::-webkit-scrollbar,.life-feed::-webkit-scrollbar{width:3px}}
+@media(max-width:360px){.character-strip{gap:7px;padding-inline:10px}.character-portrait{width:50px;height:50px;font-size:34px}.money-detail{max-width:96px}.money-detail strong{font-size:12px}.nav-label{font-size:8px}.stat-line{grid-template-columns:84px 1fr 32px;gap:5px}.stats-dock{padding-inline:11px}.stat-top .stat-label{font-size:10.3px}.form-grid{grid-template-columns:1fr}}
+@media(max-height:640px){.character-strip{min-height:74px;padding-block:7px}.stats-dock{padding-block:7px}.stat-line{margin-bottom:4px}.bottom-nav{height:65px}.nav-emoji{font-size:20px}.age-button{width:60px;height:60px;font-size:36px}.age-caption{font-size:9px}}
+
+
+/* LifePath Arcade — classic orange/blue mobile life simulator theme.
+   Original graphics and copy; no third-party artwork or game assets. */
+:root{--green:#079f1a;--greenDark:#007c16;--lightGreen:#f2faeb;--paper:#fff;--line:#d8e0e7;--bg:#e9ecea;--ink:#314555;--muted:#688397;--blue:#005d9c;--red:#e93910;--purple:#954bd2;--gold:#ffcf29}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(135deg,#e5eaf0,#f4f5f9);color:#283c4c;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.43}
+#app{min-height:100dvh;min-height:100vh}
+.shell{width:min(100%,450px);height:min(900px,calc(100dvh - 28px));border:1px solid #d2d9dd;border-radius:13px;box-shadow:0 24px 65px #273c5670;overflow:hidden;background:#fff}
+.game-header{background:#ee3613;color:#fff;height:72px;min-height:72px;padding:0 13px;border:none;border-bottom:3px solid #c9250b;position:relative}
+.game-header:after{content:"";height:4px;position:absolute;bottom:-3px;left:0;right:0;background:linear-gradient(90deg,#fdbe1b 0 22%,transparent 22% 75%,#ffd431 75%);opacity:.26;pointer-events:none}
+.header-icon{width:35px;height:35px;background:transparent;border:2px solid #ffc49f;color:#fff;font-size:24px;line-height:1;border-radius:50%;font-weight:400}
+.header-icon:hover{background:#d83215}
+.brand{gap:6px;color:#fff025;text-shadow:0 2px 0 #bd2911,1px 2px 0 #b52a0b;font-size:28px;font-weight:1000;letter-spacing:-1px;font-family:Arial Black,Arial,Helvetica,sans-serif}
+.brand-icon{width:32px;height:32px;font-size:24px;background:#fff;border-radius:50%;display:grid;place-items:center;box-shadow:0 1px 2px #a9230f}
+.top-right{gap:7px}.header-star{background:transparent;border:2px solid #ffd2a9;color:#fff;height:35px;width:35px;font-size:19px}
+.character-strip{min-height:71px;height:71px;gap:8px;padding:7px 12px;background:#e9f2f8;border-bottom:2px solid #b3c8d8}
+.character-portrait{background:#d5e8f0;border:1px solid #93b9cc;box-shadow:0 1px 0 #fff inset;width:43px;height:43px;border-radius:50%;font-size:29px}
+.character-detail strong{color:#07669d;font-size:18px;letter-spacing:-.5px;line-height:1.15;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;font-weight:900}
+.character-detail .secondary{font-size:11px;margin-top:4px;color:#55768f;max-width:195px}
+.money-detail small{font-size:11px;text-transform:none;color:#49789b;letter-spacing:0;font-weight:400;line-height:1.2;margin:4px 0 0;order:2}
+.money-detail{max-width:122px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center}
+.money-detail strong{font-size:17px;color:#209b40;font-weight:900;order:1;line-height:1.05;letter-spacing:-.4px}
+.app-main{background:#fff;overscroll-behavior:contain}
+.app-main.is-life{background:#fff}
+.life-view{min-height:0}
+.diary-top{display:none}
+.life-feed{padding:9px 13px 18px;scrollbar-color:#bed0da transparent}
+.feed{display:block}
+.timeline-year{padding:12px 0 4px;font-weight:900;font-size:15px;color:#00619a;letter-spacing:-.12px}
+.timeline-year:first-child{padding-top:4px}
+.timeline-entry{margin:0 0 8px;font-size:13.5px;color:#636d77;line-height:1.27}
+.timeline-entry strong{color:#5b6771;font-weight:650}
+.timeline-entry .timeline-emoji{font-size:12px;margin-right:4px}
+.timeline-group{margin-bottom:3px}
+.play-footer{flex:none;display:flex;flex-direction:column;z-index:7;position:relative;background:#fff}
+.promo-strip{height:31px;min-height:31px;display:flex;align-items:center;justify-content:space-between;background:#fff;position:relative;z-index:2;padding:0 11px;gap:10px}
+.promo-pill{display:flex;align-items:center;justify-content:center;background:#ffe400;border:1px solid #f1cd00;border-radius:25px;color:#e33d1d;font-size:10px;line-height:1;letter-spacing:.1px;font-weight:900;min-width:120px;padding:6px 10px}
+.promo-pill.right{min-width:88px}
+.bottom-nav{order:1;height:87px;padding:0;background:#07548c;display:grid;grid-template-columns:1fr 1fr 1.36fr 1fr 1fr;border-top:3px solid #063b6a;border-bottom:3px solid #063967;box-shadow:0 2px 7px #0a345b29;overflow:visible}
+.nav-button{border-right:1px solid #003e74;border-left:1px solid #216aa1;color:#fff;font-family:Arial,Helvetica,sans-serif;font-weight:400;font-size:10.5px;padding:10px 2px 7px;gap:5px;min-width:0}
+.nav-button:hover,.nav-button.active{color:#fff;background:#034676}
+.nav-label{color:#fff;white-space:normal;letter-spacing:0;text-shadow:0 1px 1px #003963}
+.nav-emoji{font-size:24px;filter:none;width:35px;height:35px;border-radius:50%;background:#00cad4;box-shadow:0 1px 3px #002b4a88,inset 0 0 0 2px #22dce5;display:grid;place-items:center;line-height:1}
+.nav-button.active .nav-emoji{filter:none;background:#f47f12;box-shadow:inset 0 0 0 2px #ffc462,0 1px 2px #002b4a}
+.nav-age{overflow:visible}
+.age-button{width:105px;height:105px;position:absolute;top:-22px;left:50%;border-radius:50%;border:5px solid #fff;background:#04a51a;outline:2px solid #177247;box-shadow:0 1px 1px 2px #fff,0 3px 7px #001e2a75;color:#fff;display:flex;align-items:center;justify-content:flex-start;flex-direction:column;gap:0;padding-top:11px;line-height:.95;font-size:62px;font-weight:300;transform:translateX(-50%);z-index:3;transition:background .15s,transform .13s;}
+.age-button:hover:not(:disabled){background:#029917;transform:translateX(-50%) scale(1.04)}.age-button:active:not(:disabled){transform:translateX(-50%) scale(.97)}
+.age-button:disabled{background:#78b685;opacity:.6}
+.age-button .plus-symbol{display:block;font-family:Arial,sans-serif;font-size:61px;line-height:57px;font-weight:300}
+.age-button .button-word{display:block;font-family:Arial,sans-serif;font-size:19px;font-weight:900;line-height:22px}
+.age-caption{display:none}
+.stats-dock{order:2;min-height:137px;flex:none;padding:11px 14px 13px;border-top:none;box-shadow:none;background-color:#fff8df;background-image:radial-gradient(#e6dca9 1.15px,transparent 1.15px),radial-gradient(#fffef4 1.8px,transparent 1.8px);background-position:0 0,9px 9px;background-size:19px 19px,19px 19px}
+.stat-line{grid-template-columns:99px minmax(0,1fr);gap:8px;margin-bottom:6px;align-items:center;height:22px}
+.stat-top .stat-label{font-size:13px;font-weight:700;text-align:right;color:#246081;white-space:nowrap}
+.stat-icon{font-size:16px;width:21px;margin-left:4px;vertical-align:middle}
+.stats-dock .progress{position:relative;grid-column:2;grid-row:1;height:21px;border:1px solid #ccd6d8;background:#dce9f4;border-radius:0;overflow:hidden}
+.progress-fill{background:#009d24!important;border-radius:0;min-width:0}
+.stat-value{grid-column:2!important;grid-row:1;z-index:1;color:#fff;font-weight:900;font-size:12px;line-height:1;justify-self:end;padding-right:5px;text-shadow:0 1px 2px #115522;pointer-events:none}
+.stat-value.is-outside{color:#1e6083;text-shadow:none}
+.subpage{padding-bottom:25px}.subhead{min-height:54px;padding:8px 13px;background:#eaf3f9;border-bottom:1px solid #b9d0de;color:#005f98;font-size:19px;font-weight:900}
+.back-button{color:#006caa}
+.card{border-bottom:6px solid #edf3f7;padding:13px 15px 17px}
+.card h2{font-size:16px;color:#075e94}
+.section-head .hint{color:#5a9cbb}
+.section-intro{font-size:12px;color:#687d8d}
+.action-card,.list-card{min-height:63px;border-top:1px solid #b6c4d0;padding:10px 2px}
+.action-card:hover:not(:disabled){background:#eff6fd}
+.action-emoji,.list-emoji{background:none;font-size:26px;border-radius:0;width:36px;height:38px}
+.action-title,.list-main h3{color:#095b8a;font-weight:900;font-size:14px}
+.action-desc,.list-main p{color:#667e8b;font-size:11.5px}
+.action-price{color:#2d9c36;font-size:10px}.action-price.locked{color:#a3a8b3}
+.btn{border-color:#c2d7e6;background:#edf7fd;color:#116899;border-radius:5px}
+.btn.primary{background:#099d2b;border-color:#088a2a;color:#fff}.btn.ghost{background:#edf1f4;color:#64717a}
+.detail-box,.metric{background:#eff7fc;border:1px solid #cee0eb;border-radius:5px}
+.money-hero{background:#edf6fb;border-color:#c1dce9}.money-hero .eyebrow{color:#0b6c9f}.money-hero .big{color:#149b36}
+.achievement{border-radius:4px;background:#f0f7fa}.achievement.unlocked{background:#edfbef}
+.modal-layer{background:#0b1835b8;backdrop-filter:blur(1.5px);padding:15px}
+.modal{width:min(100%,392px);padding:0 17px 20px;border:4px solid #ef3918;border-radius:20px;box-shadow:0 6px 0 #af2210,0 18px 50px #0009;animation:rise .2s ease;max-height:92dvh;overflow-y:auto}
+.modal-banner{background:linear-gradient(110deg,#f7f7f7 12%,#ff5e36 48%,#ec3312 90%);color:#fff;font-style:italic;text-align:right;padding:9px 17px;margin:0 -17px 10px;font-size:17px;letter-spacing:0;text-shadow:0 1px 1px #d22718}
+.modal-top{width:79px;height:78px;background:none;border:0;border-radius:0;margin:8px auto 3px;font-size:58px}
+.modal .eyebrow{color:#ca472e}.modal h2{font-size:20px;color:#212f3c}.modal p{font-size:14px;color:#3d4b57}
+.choice{background:linear-gradient(#f3f8fc,#dae9f1);border:1px solid #abc2d3;color:#0b5e8b;font-size:13px;font-weight:800;justify-content:center;text-align:center;min-height:43px;border-radius:5px;margin-top:7px;padding:9px 14px;box-shadow:0 2px 0 #a9bcca}
+.choice:hover{background:#c9eafa;border-color:#4f9cc5}.choice .arr{display:none}
+.create-wrap{height:min(900px,calc(100dvh - 28px));width:min(100%,450px);background:linear-gradient(180deg,#ee3613 0,#ee3613 30%,#eaf2f8 30%);border-radius:13px;box-shadow:0 25px 60px #273c5670;padding:18px}
+.create-card{border:3px solid #e23916;box-shadow:0 7px 0 #9b270f,0 12px 35px #2b345030;border-radius:14px;padding:22px 18px;background:#fff}
+.create-head .logo-mark{background:#e4f9e4;border:4px solid #ffdb14;box-shadow:0 3px 0 #b98f06;border-radius:50%;width:79px;height:79px;display:grid;place-items:center;font-size:45px;margin:0 auto 9px}
+.create-head .create-brand{font-family:Arial Black,Arial,sans-serif;font-size:32px;color:#f7c610;text-shadow:1px 2px 0 #c82d13,-1px -1px 0 #c82d13}
+.create-head h1{font-size:23px;color:#076397;margin-top:7px}
+.create-head p{color:#607788}.form-label{color:#05588c;font-size:11px}
+.field{border:1px solid #adc5d4;border-radius:5px;background:#f4f9fc}
+.field:focus{border-color:#3899b7;box-shadow:0 0 0 3px #2ba3c432}
+.start-btn{background:#08a520;border:2px solid #fff;outline:2px solid #0b8b27;border-radius:30px;box-shadow:0 3px 0 #136b2b;font-size:15px}
+.start-btn:hover{background:#029217}
+.menu-cover{inset:72px 0 0;background:#111c3899}.menu-panel{top:72px;max-width:350px}
+.menu-title{background:#f24420;color:white;border-color:#d62d12}.menu-panel button{color:#075884;border-bottom:1px solid #cbd9e5}.menu-panel button:hover{background:#f0f7fd}.menu-panel .menu-reset{color:#b83425}
+.toast{background:#075383;font-size:13px;border-radius:6px;bottom:165px}.toast.bad{background:#ba2f20}
+@media(max-width:600px){#app{min-height:100dvh}.shell,.create-wrap{height:100dvh;min-height:0;width:100%;max-width:none;border:0;border-radius:0;box-shadow:none}.modal-layer{padding:13px}.app-main::-webkit-scrollbar,.life-feed::-webkit-scrollbar{width:3px}}
+@media(max-width:370px){.character-strip{padding:6px 7px;gap:6px}.character-detail strong{font-size:16px}.money-detail{max-width:107px}.money-detail strong{font-size:15px}.brand{font-size:26px}.age-button{width:94px;height:94px;top:-17px}.age-button .plus-symbol{font-size:54px;line-height:53px}.age-button .button-word{font-size:17px}.nav-label{font-size:9.5px}.stats-dock{padding-inline:10px}.stat-line{grid-template-columns:85px 1fr;gap:5px}.stat-top .stat-label{font-size:12px}}
+@media(max-height:740px){.game-header{height:59px;min-height:59px}.character-strip{height:64px;min-height:64px}.promo-strip{height:25px;min-height:25px}.bottom-nav{height:77px}.age-button{width:94px;height:94px;top:-18px}.age-button .plus-symbol{font-size:55px;line-height:52px}.stats-dock{min-height:113px;padding-block:5px}.stat-line{margin-bottom:3px;height:22px}.menu-panel{top:59px}.menu-cover{inset:59px 0 0}}
+@media(max-height:600px){.stats-dock{min-height:98px;padding-block:5px}.stat-line{height:19px;margin-bottom:2px}.stats-dock .progress{height:18px}.bottom-nav{height:68px}.promo-strip{height:23px;min-height:23px}.age-button{width:80px;height:80px;top:-14px}.age-button .plus-symbol{font-size:49px;line-height:41px}.age-button .button-word{font-size:16px}.character-strip{height:57px;min-height:57px}}
+
+
+/* Improved new-game accessibility for short displays and mobile browsers. */
+.create-wrap{overscroll-behavior:contain}
+.create-card{flex-shrink:0}
+.start-btn{cursor:pointer;touch-action:manipulation;min-height:50px}
+@media(max-width:600px){
+  .create-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;min-height:100dvh;height:100dvh;padding:18px 16px 28px}
+  .create-card{margin:auto 0;max-width:430px}
+}
+@media(max-height:650px){
+  .create-wrap{justify-content:flex-start;padding-top:10px;padding-bottom:20px}
+  .create-card{margin:auto 0}
+  .create-head{margin-bottom:11px}
+  .create-head .logo-mark{width:56px;height:56px;font-size:31px;margin-bottom:5px}
+  .create-head .create-brand{font-size:26px}
+  .create-head h1{font-size:19px;margin-top:3px}
+  .create-card{padding-top:13px;padding-bottom:13px}
+  .field{margin-bottom:9px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(()=>{'use strict';
+const STORE='lifepath_save_v2';
+const OLD_STORE='lifepath_save_v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, pick=a=>a[rand(0,a.length-1)], clamp=v=>Math.max(0,Math.min(100,Math.round(v))), cash=n=>{const v=Math.abs(Math.round(n));return (n<0?'−':'')+'$'+v.toLocaleString('en-US')};
+const firstNames=['Alex','Jordan','Taylor','Morgan','Riley','Jamie','Casey','Sam','Avery','Harper','Charlie','Quinn','Skyler','Robin','Elliot','Cameron'];
+const lastNames=['Rivera','Hayes','Bennett','Carter','Kim','Patel','Nguyen','Morgan','Reyes','Brooks','Parker','Chen','Foster','Diaz','Lee','Campbell'];
+const places=['United States','Canada','United Kingdom','Indonesia','Australia','Japan','Brazil','Germany'];
+const jobs=[
+{id:'dog',name:'Dog Walker',icon:'🐕',salary:14500,age:16,smart:0,degree:false},
+{id:'barista',name:'Barista',icon:'☕',salary:28000,age:16,smart:0,degree:false},
+{id:'retail',name:'Retail Associate',icon:'🛍️',salary:34500,age:18,smart:0,degree:false},
+{id:'admin',name:'Office Assistant',icon:'🗂️',salary:46000,age:18,smart:35,degree:false},
+{id:'designer',name:'Graphic Designer',icon:'🎨',salary:65000,age:20,smart:53,degree:false},
+{id:'engineer',name:'Software Engineer',icon:'💻',salary:102000,age:21,smart:75,degree:true},
+{id:'lawyer',name:'Lawyer',icon:'⚖️',salary:132000,age:23,smart:82,degree:true},
+{id:'doctor',name:'Doctor',icon:'🩺',salary:176000,age:25,smart:88,degree:true}];
+const actions=[
+{id:'read',icon:'📚',title:'Read a Book',desc:'Improve smarts and learn something new.',min:5,cost:0},
+{id:'gym',icon:'🏋️',title:'Hit the Gym',desc:'Improve health and appearance.',min:12,cost:100},
+{id:'relax',icon:'🧘',title:'Meditate',desc:'Restore some happiness and health.',min:6,cost:0},
+{id:'study',icon:'✏️',title:'Study Harder',desc:'Boost smarts while in school.',min:6,cost:0},
+{id:'doctor',icon:'🏥',title:'See a Doctor',desc:'Get medical help and recover health.',min:0,cost:1200},
+{id:'gig',icon:'💼',title:'Side Hustle',desc:'Earn extra cash from small jobs.',min:14,cost:0},
+{id:'vacation',icon:'🏖️',title:'Take a Vacation',desc:'Recharge with a much-needed break.',min:18,cost:3500},
+{id:'shopping',icon:'🛍️',title:'Treat Yourself',desc:'A little retail therapy.',min:14,cost:800},
+{id:'social',icon:'🎉',title:'Make a Friend',desc:'Meet someone new and connect.',min:6,cost:0},
+{id:'date',icon:'💘',title:'Find a Date',desc:'Try to meet a romantic partner.',min:16,cost:0},
+{id:'baby',icon:'🍼',title:'Have a Child',desc:'Start or grow your family.',min:20,cost:2000}
+];
+let S=null,tab='life',eventModal=null,deadModal=false,toastTimer=null,menuOpen=false;
+function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}
+function load(){
+  // A partially saved or older game must never prevent players from starting.
+  try{
+    const text=localStorage.getItem(STORE)||localStorage.getItem(OLD_STORE);
+    if(!text)return null;
+    const x=JSON.parse(text);
+    if(!x||typeof x.name!=='string'||typeof x.age!=='number'||!Array.isArray(x.log)||!Array.isArray(x.people))return null;
+    x.stats={health:75,happiness:75,smarts:55,looks:65,...(x.stats||{})};
+    x.assets=Array.isArray(x.assets)?x.assets:[];
+    x.achievements=Array.isArray(x.achievements)?x.achievements:[];
+    x.actionsUsed=x.actionsUsed&&typeof x.actionsUsed==='object'?x.actionsUsed:{};
+    x.children=Number.isFinite(x.children)?x.children:0;
+    x.ids=Number.isFinite(x.ids)?x.ids:x.people.length;
+    x.jobYears=Number.isFinite(x.jobYears)?x.jobYears:0;
+    x.eventCount=Number.isFinite(x.eventCount)?x.eventCount:0;
+    x.money=Number.isFinite(x.money)?x.money:0;
+    x.alive=x.alive!==false;
+    x.place=x.place||'United States';
+    return x;
+  }catch(e){console.warn('Saved game could not be loaded; a new life is available.',e);return null}
+}
+function clearSave(){try{localStorage.removeItem(STORE);localStorage.removeItem(OLD_STORE)}catch(e){}}
+function log(icon,title,desc){S.log.unshift({age:S.age,icon,title,desc});S.log=S.log.slice(0,140)}
+function notice(msg,bad=false){document.querySelector('.toast')?.remove();const el=document.createElement('div');el.className='toast'+(bad?' bad':'');el.textContent=msg;document.body.appendChild(el);clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2800)}
+function stat(k,amount){S.stats[k]=clamp(S.stats[k]+amount)}
+function achievement(id){if(!S.achievements.includes(id)){S.achievements.push(id);const names={graduation:'High School Graduate',degree:'University Graduate',job:'First Paycheck',rich:'Six Figures',love:'Love Story',parent:'Proud Parent',old:'A Life Well Lived'};log('🏆','Achievement unlocked',names[id]||id)}}
+function makePerson(type, age){const name=pick(firstNames)+' '+pick(lastNames);return {id:'p'+(++S.ids),name,type,age:age??Math.max(0,S.age+rand(-3,3)),closeness:rand(53,82),alive:true}}
+function newLife(name,gender,place){deadModal=false;S={name:name.trim().slice(0,30)||'Alex Rivera',gender,place,age:0,money:0,stats:{health:rand(76,99),happiness:rand(69,95),smarts:rand(35,80),looks:rand(40,90)},people:[],ids:0,job:null,jobYears:0,workFocus:false,degree:false,collegeEnd:null,actionsUsed:{},log:[],achievements:[],alive:true,married:false,children:0,assets:[],eventCount:0};S.people.push(makePerson('Mother',rand(25,39)),makePerson('Father',rand(25,42)));S.people[0].closeness=rand(70,95);S.people[1].closeness=rand(65,90);log('👶','A new life begins',`You were born in ${S.place}. Your story is yours to write.`);tab='life';menuOpen=false;eventModal=null;save();render()}
+function adult(){return S.age>=18}
+function school(){if(S.collegeEnd!==null&&S.age<S.collegeEnd)return 'University';if(S.age>=6&&S.age<=11)return 'Elementary School';if(S.age>=12&&S.age<=14)return 'Middle School';if(S.age>=15&&S.age<=17)return 'High School';return S.age>=18?'Finished school':'Not in school'}
+function occupation(){return S.job?jobs.find(j=>j.id===S.job)?.name:'Unemployed'}
+function salary(){const job=jobs.find(j=>j.id===S.job);return job?Math.round(job.salary*(1+Math.max(0,S.jobYears-1)*.055)):0}
+function education(){return S.degree?'University Degree':S.age>=18?'High School Diploma':school()}
+function stage(){return S.age<3?'Baby':S.age<13?'Child':S.age<18?'Teenager':S.age<30?'Young Adult':S.age<60?'Adult':'Senior'}
+function avatar(){return S.age<3?'👶':S.age<13?'🧒':S.age<18?'🧑':S.age<60?'🙂':'👵'}
+function consume(k){const n=S.actionsUsed[k]||0;if(n>=2){notice('You can only do this twice each year.',true);return false}S.actionsUsed[k]=n+1;return true}
+function pay(cost){if(S.money<cost){notice(`You need ${cash(cost)} to do that.`,true);return false}S.money-=cost;return true}
+function randomEvent(){const events=[];
+if(S.age<=12)events.push({icon:'🎁',title:'A Surprise Gift',text:'A relative sends you birthday money. What will you do?',choices:[{text:'Save it for later',fn:()=>{S.money+=300;stat('happiness',3);log('🎁','Birthday money','You saved $300 for the future.')}},{text:'Buy something fun',fn:()=>{stat('happiness',9);log('🧸','New toy','You spent your gift money on something fun.')}}]});
+if(S.age>=8&&S.age<=17)events.push({icon:'📝',title:'A Big Exam',text:'An important exam is coming up at school. How do you prepare?',choices:[{text:'Study all weekend',fn:()=>{stat('smarts',8);stat('happiness',-4);log('📝','Exam ace','All that studying paid off!')}},{text:'Just wing it',fn:()=>{stat('happiness',3);stat('smarts',-3);log('📝','A risky exam','You chose to relax instead of studying.')}}]});
+if(S.age>=13)events.push({icon:'📱',title:'A Lost Phone',text:'You find a nice phone at the park. There is no one around.',choices:[{text:'Return it to its owner',fn:()=>{stat('happiness',7);log('📱','Good deed','You tracked down the owner, who thanked you.')}},{text:'Sell it for $400',fn:()=>{S.money+=400;stat('happiness',-6);log('📱','Easy money','You sold the phone. It did not feel quite right.')}}]});
+if(S.age>=16)events.push({icon:'💰',title:'An Unexpected Opportunity',text:'Someone offers you a risky way to earn extra money.',choices:[{text:'Take the chance',fn:()=>{if(Math.random()<.53){S.money+=rand(1000,5500);log('💰','Lucky break','Your gamble paid off!')}else{S.money-=Math.min(Math.max(S.money,0),rand(400,3000));stat('happiness',-8);log('📉','A setback','The deal went wrong and you lost money.')}}},{text:'Play it safe',fn:()=>{stat('smarts',2);log('🧠','Safe choice','You decided not to take unnecessary risks.')}}]});
+if(S.age>=18)events.push({icon:'🧳',title:'A Fresh Start',text:'You have a chance to attend a neighborhood festival this weekend.',choices:[{text:'Go and have some fun',fn:()=>{if(S.money>=300)S.money-=300;stat('happiness',9);log('🎡','A wonderful weekend','You enjoyed yourself and made some memories.')}},{text:'Stay home and recharge',fn:()=>{stat('health',3);stat('happiness',3);log('🏠','A quiet weekend','You enjoyed some peaceful time at home.')}}]});
+if(S.age>=25)events.push({icon:'💸',title:'An Unexpected Bill',text:'An essential appliance breaks. You need to decide how to handle it.',choices:[{text:'Pay $1,400 for repairs',fn:()=>{S.money-=1400;stat('happiness',2);log('🔧','Problem solved','You paid to fix the appliance.')}},{text:'Make do for now',fn:()=>{stat('happiness',-8);stat('health',-2);log('🔧','Putting it off','The broken appliance is making life frustrating.')}}]});
+if(S.age>=20)events.push({icon:'🐕',title:'A Stray Dog',text:'A friendly dog follows you home. What will you do?',choices:[{text:'Adopt it',fn:()=>{S.money-=500;stat('happiness',12);log('🐕','A furry companion','You gave the dog a loving home.')}},{text:'Help it find a shelter',fn:()=>{stat('happiness',5);log('🐾','A good home','You helped the dog find a safe new home.')}}]});
+if(S.age>=40)events.push({icon:'❤️',title:'A Health Wake-Up Call',text:'Your doctor suggests you start taking better care of yourself.',choices:[{text:'Commit to a healthier lifestyle',fn:()=>{stat('health',11);stat('happiness',2);log('❤️','Turning over a new leaf','You made your health a priority.')}},{text:'Ignore the advice',fn:()=>{stat('health',-10);stat('happiness',3);log('🍕','Living in the moment','You ignored the advice and carried on as usual.')}}]});
+if(S.age>=60)events.push({icon:'🌿',title:'What Matters Most?',text:'With so many years behind you, you reflect on what makes life meaningful.',choices:[{text:'Spend time with loved ones',fn:()=>{S.people.filter(p=>p.alive).forEach(p=>p.closeness=clamp(p.closeness+10));stat('happiness',10);log('🌿','Meaningful connections','You made time for the people you love.')}},{text:'Pursue a new hobby',fn:()=>{stat('happiness',10);stat('smarts',4);log('🎨','Never too late','You found a hobby that brings you joy.')}}]});
+return events.length?pick(events):null}
+function ageUp(){if(!S.alive||eventModal)return;tab='life';S.age++;S.actionsUsed={};
+const lastSchool=S.age===6?'You started elementary school.':S.age===12?'You started middle school.':S.age===15?'You started high school.':null;
+if(lastSchool)log('🏫','First day of school',lastSchool);
+if(S.age===18){log('🎓','High school graduation','You graduated high school! Your next chapter begins.');achievement('graduation')}
+if(S.collegeEnd!==null&&S.age>=S.collegeEnd){S.collegeEnd=null;S.degree=true;stat('smarts',11);log('🎓','University graduation','You earned your university degree.');achievement('degree')}
+if(S.job){S.jobYears++;const earned=salary();S.money+=earned;let expense=S.age<18?1000:Math.round(12000+(S.age>28?(S.age-28)*420:0));if(S.children)expense+=S.children*3200;S.money-=expense;log('💵','A year at work',`You earned ${cash(earned)} as a ${occupation()} and paid ${cash(expense)} in living costs.`);if(S.workFocus){stat('happiness',-4);stat('smarts',2);if(Math.random()<.3){S.money+=2000;log('⭐','Work bonus','Your hard work earned a $2,000 bonus.')}}}else if(S.age>=18){const expense=Math.round(8500+(S.age>30?(S.age-30)*260:0)+S.children*2800);S.money-=expense;log('🏡','Living expenses',`Your yearly living costs came to ${cash(expense)}. Find a job to build up your finances.`)}
+if(S.collegeEnd!==null&&S.age<S.collegeEnd){S.money-=11000;stat('smarts',rand(2,5));log('📚','University tuition','You paid $11,000 in tuition this year.')}
+S.workFocus=false;
+const decay=S.age>75?rand(4,9):S.age>60?rand(2,5):S.age>40?rand(0,3):rand(-2,2);
+stat('health',-decay);stat('happiness',rand(-5,4));stat('smarts',S.age<18?rand(0,2):rand(-1,1));stat('looks',S.age>50?-rand(1,3):rand(-1,2));
+for(const p of S.people){if(!p.alive)continue;p.age++;p.closeness=clamp(p.closeness+rand(-4,2));if(p.age>=77&&Math.random()<Math.min(.55,(p.age-70)*.027)){p.alive=false;stat('happiness',-13);log('🕯️','A difficult goodbye',`${p.name} passed away at age ${p.age}.`);if(p.type==='Partner'){S.married=false;p.type='Former partner'}}}
+if(S.age===65)log('🌅','A milestone birthday','You reached 65 years old. What an incredible journey!');
+if(S.age>=75)achievement('old');
+if(S.money>=100000)achievement('rich');
+if(S.stats.health<=0||S.age>=115||(S.age>75&&Math.random()<Math.pow((S.age-72)/120,1.55))){die();return}
+if(Math.random()<.68){eventModal=randomEvent()}
+if(!eventModal)log('🎂',`You turned ${S.age}`,pick(['Another year, another chapter.','A new year brings new possibilities.','The story of your life continues.']))
+save();render()}
+function die(){S.alive=false;log('🕊️','Your story ends',`You lived to age ${S.age}, leaving behind memories and a legacy.`);save();deadModal=true;render()}
+function doAction(id){if(eventModal||!S.alive)return;const a=actions.find(a=>a.id===id);if(!a||S.age<a.min)return notice('You are not old enough yet.',true);if(id==='study'&&!(S.age>=6&&(S.age<18||S.collegeEnd!==null)))return notice('You need to be enrolled in school.',true);if(id==='date'&&S.people.some(p=>p.type==='Partner'&&p.alive))return notice('You are already in a relationship.',true);if(id==='baby'&&!S.people.some(p=>p.type==='Partner'&&p.alive))return notice('Find a partner first.',true);if((S.actionsUsed[id]||0)>=2)return notice('You can only do this twice per year.',true);if(a.cost&&!pay(a.cost))return;if(!consume(id))return;
+switch(id){
+case'read':stat('smarts',rand(2,6));stat('happiness',1);log('📚','Finished a book','You learned something new.');break;
+case'gym':stat('health',rand(4,9));stat('looks',rand(1,4));stat('happiness',1);log('🏋️','A great workout','You worked up a sweat and felt stronger.');break;
+case'relax':stat('happiness',rand(5,10));stat('health',2);log('🧘','Some peace and quiet','You took time to unwind.');break;
+case'study':stat('smarts',rand(5,9));stat('happiness',-3);log('✏️','Studied harder','You put in the effort at school.');break;
+case'doctor':stat('health',rand(9,19));log('🏥','Medical checkup','The doctor helped you feel better.');break;
+case'gig':{const pay=rand(700,2500);S.money+=pay;stat('happiness',-2);log('💼','Side hustle',`You earned ${cash(pay)} doing odd jobs.`);break}
+case'vacation':stat('happiness',rand(13,23));stat('health',3);log('🏖️','A vacation to remember','You made some wonderful memories.');break;
+case'shopping':stat('happiness',rand(6,13));log('🛍️','Treat yourself','You bought something you have wanted for a while.');break;
+case'social':{const p=makePerson('Friend',S.age);S.people.push(p);stat('happiness',5);log('🤝','A new friendship',`You became friends with ${p.name}.`);break}
+case'date':{const p=makePerson('Partner',S.age+rand(-3,3));S.people.push(p);stat('happiness',12);log('💘','A new romance',`You started dating ${p.name}.`);break}
+case'baby':{S.children++;const p=makePerson('Child',0);p.age=0;p.closeness=95;S.people.push(p);stat('happiness',14);log('🍼','A new addition',`Welcome to the world, ${p.name}!`);achievement('parent');break}
+}
+if(S.money>=100000)achievement('rich');save();render();notice('Action completed!')}
+function applyJob(id){const j=jobs.find(j=>j.id===id);if(!j)return; if(S.age<j.age||S.stats.smarts<j.smart||(j.degree&&!S.degree))return notice('You do not meet the requirements.',true);S.job=id;S.jobYears=0;S.workFocus=false;log(j.icon,'You got the job!',`You were hired as a ${j.name}, starting at ${cash(j.salary)} per year.`);achievement('job');save();render();notice('Congratulations on your new job!')}
+function jobAction(id){if(id==='quit'){S.job=null;S.jobYears=0;log('🚪','You resigned','You quit your job. Time for a new adventure.')}if(id==='work'){if(S.workFocus)return notice('You already worked hard this year.',true);S.workFocus=true;stat('happiness',-3);log('💼','Putting in the work','You made an extra effort at work.')}save();render()}
+function college(){if(S.age<18||S.age>45||S.degree||S.collegeEnd!==null)return;if(S.stats.smarts<45)return notice('You need at least 45 smarts to enroll.',true);S.collegeEnd=S.age+4;S.money-=3000;stat('happiness',6);log('🎓','Off to university','You enrolled in a four-year degree program. Tuition is $11,000 per year.');save();render()}
+function personAction(id,act){const p=S.people.find(p=>p.id===id);if(!p||!p.alive)return;const key='p:'+p.id+':'+act;if((S.actionsUsed[key]||0)>=2)return notice('You have already done this twice this year.',true);S.actionsUsed[key]=(S.actionsUsed[key]||0)+1;
+if(act==='time'){p.closeness=clamp(p.closeness+rand(7,13));stat('happiness',3);log('💞','Quality time',`You spent time with ${p.name}.`)}
+else if(act==='compliment'){p.closeness=clamp(p.closeness+rand(3,7));stat('happiness',1);log('💬','Kind words',`You complimented ${p.name}.`)}
+else if(act==='marry'){if(p.type!=='Partner'||S.age<18||p.closeness<75||S.married)return;S.married=true;S.money-=3500;stat('happiness',16);log('💍','Wedding bells',`You married ${p.name}!`);achievement('love')}
+else if(act==='breakup'){if(p.type!=='Partner')return;p.type='Ex-partner';S.married=false;stat('happiness',-15);log('💔','A breakup',`You and ${p.name} went your separate ways.`)}
+save();render()}
+function buyAsset(id){if(S.age<18)return;const asset=id==='car'?{id:'car',name:'Used Car',cost:12000,icon:'🚗'}:{id:'home',name:'Cozy House',cost:180000,icon:'🏠'};if(S.assets.some(a=>a.id===id))return notice('You already own this.',true);if(!pay(asset.cost))return;S.assets.push(asset);stat('happiness',9);log(asset.icon,'A big purchase',`You bought a ${asset.name.toLowerCase()} for ${cash(asset.cost)}.`);save();render()}
+function careerTab(){const current=S.job?jobs.find(j=>j.id===S.job):null;return `<div class="stack page-enter"><div class="card"><div class="section-head"><h2>🎓 Education</h2><span class="tag">${esc(education())}</span></div><div class="detail-box"><strong>${S.collegeEnd!==null?'University student':S.degree?'University graduate':S.age>=18?'High school graduate':school()}</strong><p>${S.collegeEnd!==null?`You graduate in ${S.collegeEnd-S.age} year(s). Yearly tuition is $11,000.`:S.degree?'Your university degree qualifies you for advanced careers.':S.age>=18?'University is optional, but unlocks better jobs.':'Focus on studying and growing your smarts.'}</p></div>${S.age>=18&&S.age<=45&&!S.degree&&S.collegeEnd===null?`<button class="btn primary" data-college>Enroll in University · $3,000</button><p class="small-note">Requirements: 45+ smarts · 4 years · $11,000 annual tuition</p>`:''}</div><div class="card"><div class="section-head"><h2>💼 Current job</h2></div>${current?`<div class="list-card"><div class="list-emoji">${current.icon}</div><div class="list-main"><h3>${esc(current.name)}</h3><p>${cash(salary())}/year · ${S.jobYears} year(s) worked</p></div></div><div class="toggle-row" style="margin-top:15px"><button class="btn primary" data-job-action="work" ${S.workFocus?'disabled':''}>Work harder</button><button class="btn danger" data-job-action="quit">Resign</button></div>`:`<div class="empty"><div class="empty-icon">🧳</div>You are currently unemployed. Apply for a position below.</div>`}</div><div class="card"><div class="section-head"><h2>Available jobs</h2><span class="hint">${jobs.length} CAREERS</span></div><div class="listing">${jobs.map(j=>{const eligible=S.age>=j.age&&S.stats.smarts>=j.smart&&(!j.degree||S.degree);return `<div class="list-card"><div class="list-emoji">${j.icon}</div><div class="list-main"><h3>${esc(j.name)}</h3><p>${cash(j.salary)} / year · Age ${j.age}+${j.smart?', '+j.smart+' smarts':''}${j.degree?' · University degree':''}</p></div><div class="list-actions"><button class="btn ${eligible?'primary':'ghost'}" data-apply="${j.id}" ${!eligible||S.job===j.id?'disabled':''}>${S.job===j.id?'Current':eligible?'Apply':'Locked'}</button></div></div>`}).join('')}</div></div></div>`}
+function relationshipTab(){const peeps=S.people.filter(p=>p.type!=='Ex-partner'&&p.type!=='Former partner');return `<div class="stack page-enter"><div class="card"><div class="section-head"><h2>❤️ Your people</h2><span class="hint">${peeps.filter(p=>p.alive).length} CONNECTIONS</span></div><p class="section-intro">Relationships grow when you invest time in them. Spend time together to improve closeness.</p><div class="listing">${peeps.length?peeps.map(p=>`<div class="list-card" style="align-items:flex-start"><div class="list-emoji">${p.type==='Mother'?'👩':p.type==='Father'?'👨':p.type==='Friend'?'🤝':p.type==='Child'?'🧒':'💘'}</div><div class="list-main"><h3>${esc(p.name)} ${p.type==='Partner'&&S.married?'💍':''}</h3><p>${p.alive?`${esc(p.type)} · Age ${p.age}`:'Deceased'} · Closeness ${p.closeness}%</p><div class="relation-bar"><div style="width:${p.closeness}%"></div></div></div>${p.alive?`<div class="list-actions"><button class="btn" data-person="${p.id}" data-act="time">Spend time</button><button class="btn ghost" data-person="${p.id}" data-act="compliment">Compliment</button>${p.type==='Partner'&&S.age>=18&&p.closeness>=75&&!S.married?`<button class="btn primary" data-person="${p.id}" data-act="marry">Get married</button>`:''}${p.type==='Partner'?`<button class="btn danger" data-person="${p.id}" data-act="breakup">Break up</button>`:''}</div>`:''}</div>`).join(''):'<div class="empty">No relationships yet.</div>'}</div></div><div class="card"><div class="section-head"><h2>Build new connections</h2></div><p class="section-intro">Meet new friends or look for romance from the Activities tab. Your network will grow over time.</p><button class="btn primary" data-goto="activities">Explore activities</button></div></div>`}
+function activitiesTab(){return `<div class="stack page-enter"><div class="card"><div class="section-head"><h2>✨ Activities</h2><span class="hint">MAKE EVERY YEAR COUNT</span></div><p class="section-intro">Choose how to spend your time. Most activities can be done twice per year, then reset when you age up.</p><div class="actions">${actions.map(a=>{const locked=S.age<a.min||(a.id==='study'&&!(S.age>=6&&(S.age<18||S.collegeEnd!==null)))||(a.id==='date'&&S.people.some(p=>p.type==='Partner'&&p.alive))||(a.id==='baby'&&!S.people.some(p=>p.type==='Partner'&&p.alive));const max=(S.actionsUsed[a.id]||0)>=2;return `<button class="action-card" data-action="${a.id}" ${locked||max?'disabled':''}><div class="action-emoji">${a.icon}</div><div class="action-title">${esc(a.title)}</div><div class="action-desc">${esc(a.desc)}</div><div class="action-price ${locked?'locked':a.cost?'':'free'}">${max?'USED THIS YEAR':locked?'🔒 LOCKED · AGE '+a.min+'+':a.cost?cash(a.cost):'FREE'} ${!locked&&!max?`· ${2-(S.actionsUsed[a.id]||0)} LEFT`:''}</div></button>`}).join('')}</div></div></div>`}
+function financesTab(){const yearly=salary(),expenses=S.age<18?0:Math.round((S.job?12000:8500)+(S.age>30?(S.age-30)*(S.job?420:260):0)+S.children*(S.job?3200:2800));const assetsVal=S.assets.reduce((n,a)=>n+a.cost,0);return `<div class="stack page-enter"><div class="money-hero"><div class="eyebrow">YOUR NET WORTH</div><div class="big">${cash(S.money+assetsVal)}</div><p>Your cash savings and property value combined.</p></div><div class="card"><div class="section-head"><h2>💵 Finances</h2></div><div class="mini-grid"><div class="metric"><div class="metric-label">Cash balance</div><div class="metric-value">${cash(S.money)}</div></div><div class="metric"><div class="metric-label">Yearly income</div><div class="metric-value">${cash(yearly)}</div></div><div class="metric"><div class="metric-label">Estimated living costs</div><div class="metric-value">${cash(expenses)}</div></div><div class="metric"><div class="metric-label">Asset value</div><div class="metric-value">${cash(assetsVal)}</div></div></div><p class="small-note">Income and living expenses settle whenever you age up. University tuition is additional.</p></div><div class="card"><div class="section-head"><h2>🏡 Life purchases</h2></div><div class="listing">${[{id:'car',name:'Used Car',cost:12000,icon:'🚗',desc:'A reliable ride for your everyday life.'},{id:'home',name:'Cozy House',cost:180000,icon:'🏠',desc:'A place to call your own.'}].map(a=>{const owned=S.assets.some(x=>x.id===a.id);return `<div class="list-card"><div class="list-emoji">${a.icon}</div><div class="list-main"><h3>${a.name}</h3><p>${a.desc} · ${cash(a.cost)}</p></div><div class="list-actions"><button class="btn ${owned?'ghost':'primary'}" data-buy="${a.id}" ${owned||S.age<18||S.money<a.cost?'disabled':''}>${owned?'Owned':'Buy'}</button></div></div>`}).join('')}</div></div></div>`}
+function achievementsTab(){const items=[['graduation','🎓','High School Graduate','Finish high school'],['degree','📜','University Graduate','Earn a university degree'],['job','💼','First Paycheck','Get your first job'],['rich','💰','Six Figures','Save at least $100,000'],['love','💍','Love Story','Get married'],['parent','🍼','Proud Parent','Have a child'],['old','🌅','A Life Well Lived','Reach age 75']];return `<div class="stack page-enter"><div class="card"><div class="section-head"><h2>🏆 Milestones</h2><span class="hint">${S.achievements.length}/${items.length} UNLOCKED</span></div><div class="achievement-grid">${items.map(i=>`<div class="achievement ${S.achievements.includes(i[0])?'unlocked':''}"><div style="font-size:26px">${i[1]}</div><strong>${i[2]}</strong><span>${i[3]}</span></div>`).join('')}</div></div><div class="card"><div class="section-head"><h2>📜 Life history</h2></div>${feed(40)}</div></div>`}
+function feed(limit){
+  const logs=S.log.slice(0,limit).reverse();
+  let previous=null;
+  return `<div class="feed">${logs.map(i=>{
+    const group=previous!==i.age; previous=i.age;
+    return `${group?`<div class="timeline-year">Age: ${i.age} ${i.age===1?'year':'years'}</div>`:''}<p class="timeline-entry"><span class="timeline-emoji">${i.icon}</span><strong>${esc(i.title)}.</strong> ${esc(i.desc)}</p>`;
+  }).join('')}</div>`;
+}
+function statsDock(){
+  const stats=[['happiness','😆','Happiness'],['health','❤️','Health'],['smarts','💡','Smarts'],['looks','✨','Looks']];
+  return `<div class="stats-dock" aria-label="Character statistics">${stats.map(t=>{
+    const value=S.stats[t[0]];
+    const color=value<35?'#ed8514':value<55?'#ddb41c':'#009d24';
+    return `<div class="stat-line"><div class="stat-top"><span class="stat-label">${t[2]} <span class="stat-icon">${t[1]}</span></span></div><div class="progress" role="progressbar" aria-label="${t[2]}" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="background:${color}!important;width:${value}%"></div></div><span class="stat-value ${value<18?'is-outside':''}">${value}%</span></div>`;
+  }).join('')}</div>`;
+}
+function dashboard(){
+  return `<div class="life-view page-enter"><div class="life-feed" id="life-feed">${feed(130)}</div></div>`;
+}
+function countryFlag(place){return {'United States':'🇺🇸','Canada':'🇨🇦','United Kingdom':'🇬🇧','Indonesia':'🇮🇩','Australia':'🇦🇺','Japan':'🇯🇵','Brazil':'🇧🇷','Germany':'🇩🇪'}[place]||'🌐'}
+function renderModal(){if(deadModal){return `<div class="modal-layer"><div class="modal"><div class="modal-banner">LIFE COMPLETE</div><div class="modal-top">🕊️</div><div class="eyebrow">THE FINAL CHAPTER</div><h2>A life well lived</h2><p><strong>${esc(S.name)}</strong> lived to be <strong>${S.age}</strong> years old. Final cash balance: <strong>${cash(S.money)}</strong>. Children: ${S.children}. Achievements: ${S.achievements.length}.</p><button class="start-btn" data-new>Start another life</button></div></div>`}if(!eventModal)return '';return `<div class="modal-layer"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(eventModal.title)}"><div class="modal-banner">LIFE EVENT</div><div class="modal-top">${eventModal.icon}</div><div class="eyebrow">AGE ${S.age} · MAKE A CHOICE</div><h2>${esc(eventModal.title)}</h2><p>${esc(eventModal.text)}</p>${eventModal.choices.map((c,i)=>`<button class="choice" data-choice="${i}"><span>${esc(c.text)}</span><span class="arr">›</span></button>`).join('')}</div></div>`}
+function createScreen(){const saved=load();return `<div class="create-wrap"><div class="create-card"><div class="create-head"><div class="logo-mark">🌱</div><div class="create-brand">LifePath</div><h1>Choose your next life</h1><p>One life. Unlimited possibilities. Every choice changes your story.</p></div><form id="create-form"><label class="form-label" for="name">Your name</label><input class="field" id="name" name="name" maxlength="30" autocomplete="off" placeholder="Enter your name" value="${esc(pick(firstNames)+' '+pick(lastNames))}"><div class="form-grid"><div><label class="form-label" for="gender">Gender</label><select class="field" id="gender" name="gender"><option>Male</option><option>Female</option><option>Non-binary</option></select></div><div><label class="form-label" for="place">Country</label><select class="field" id="place" name="place">${places.map(p=>`<option>${p}</option>`).join('')}</select></div></div><button class="start-btn" type="button" data-start aria-label="Start a new life">👶 Start your life</button></form>${saved?'<button class="choice" data-resume><span>↩ Continue your previous life</span><span class="arr">›</span></button>':''}<p class="create-foot">Auto-saves on this device • Plays offline • Free</p></div></div>`}
+function render(){
+  const a=$('#app');
+  if(!S){a.innerHTML=createScreen();return;}
+  if(!S.alive&&!deadModal)deadModal=true;
+  const titles={life:'My Life',activities:'Activities',relationships:'Relationships',career:'Occupation',finances:'Assets',milestones:'Achievements'};
+  const menuLinks=[['life','🏡','My Life'],['career','💼','Occupation & School'],['finances','🏠','Assets & Finances'],['relationships','💞','Relationships'],['activities','🎯','Activities'],['milestones','🏆','Achievements']];
+  a.innerHTML=`<div class="shell">
+    <header class="game-header">
+      <button class="header-icon" data-menu aria-label="Open menu" aria-expanded="${menuOpen}">☰</button>
+      <div class="brand"><span class="brand-icon">🌱</span>LifePath</div>
+      <div class="top-right"><span class="header-star" title="Your story">★</span></div>
+    </header>
+    <div class="character-strip">
+      <div class="character-portrait" title="${esc(S.place)}">${avatar()}</div>
+      <div class="character-detail"><strong>${countryFlag(S.place)} ${esc(S.name)}</strong><span class="secondary">${S.age} years old · ${esc(occupation())}</span></div>
+      <div class="money-detail"><small>Bank Balance</small><strong>${cash(S.money)}</strong></div>
+    </div>
+    <main class="app-main ${tab==='life'?'is-life':''}">
+      ${tab==='life'?dashboard():`<div class="subpage"><div class="subhead"><button class="back-button" data-goto="life" aria-label="Back to life">‹</button>${titles[tab]||'Life'}</div>${tab==='activities'?activitiesTab():tab==='relationships'?relationshipTab():tab==='career'?careerTab():tab==='finances'?financesTab():achievementsTab()}</div>`}
+    </main>
+    <div class="play-footer">
+      <div class="promo-strip"><span class="promo-pill">✦ Your Story, Your Rules</span><span class="promo-pill right">★ Daily Life</span></div>
+      <nav class="bottom-nav" aria-label="Life sections">
+        <button class="nav-button ${tab==='career'?'active':''}" data-goto="career"><span class="nav-emoji">💼</span><span class="nav-label">Occupation</span></button>
+        <button class="nav-button ${tab==='finances'?'active':''}" data-goto="finances"><span class="nav-emoji">💰</span><span class="nav-label">Assets</span></button>
+        <div class="nav-age"><button class="age-button" data-age title="Age up one year" aria-label="Age up one year" ${!S.alive||eventModal?'disabled':''}><span class="plus-symbol">+</span><span class="button-word">Age</span></button></div>
+        <button class="nav-button ${tab==='relationships'?'active':''}" data-goto="relationships"><span class="nav-emoji">♥</span><span class="nav-label">Relationships</span></button>
+        <button class="nav-button ${tab==='activities'?'active':''}" data-goto="activities"><span class="nav-emoji">•••</span><span class="nav-label">Activities</span></button>
+      </nav>
+      ${statsDock()}
+    </div>
+    ${menuOpen?`<div class="menu-cover" data-cover></div><div class="menu-panel"><div class="menu-title">LIFEPATH MENU</div>${menuLinks.map(x=>`<button data-goto="${x[0]}"><span>${x[1]}</span>${x[2]}</button>`).join('')}<button class="menu-reset" data-reset>↺ Start a new life</button></div>`:''}
+    </div>${renderModal()}`;
+  if(tab==='life')requestAnimationFrame(()=>{const feed=document.getElementById('life-feed');if(feed)feed.scrollTop=feed.scrollHeight});
+}
+function startFromForm(){
+  const name=document.getElementById('name')?.value||'Alex Rivera';
+  const gender=document.getElementById('gender')?.value||'Male';
+  const place=document.getElementById('place')?.value||'United States';
+  newLife(name,gender,place);
+}
+$('#app').addEventListener('submit',e=>{if(e.target.id!=='create-form')return;e.preventDefault();startFromForm()});
+$('#app').addEventListener('click',e=>{const el=e.target.closest('button,[data-cover]');if(!el)return;const d=el.dataset;if('start'in d){startFromForm();return}if('resume'in d){S=load();deadModal=!S?.alive;render();return}if('new'in d){S=null;deadModal=false;eventModal=null;menuOpen=false;clearSave();render();return}if('reset'in d){if(confirm('Start a completely new life? This will overwrite your saved game.')){S=null;deadModal=false;eventModal=null;menuOpen=false;clearSave();render()}return}if('menu'in d){menuOpen=!menuOpen;render();return}if('cover'in d){menuOpen=false;render();return}if('goto'in d){tab=d.goto;menuOpen=false;render();return}if('age'in d){ageUp();return}if('action'in d){doAction(d.action);return}if('college'in d){college();return}if('apply'in d){applyJob(d.apply);return}if('jobAction'in d){jobAction(d.jobAction);return}if('person'in d){personAction(d.person,d.act);return}if('buy'in d){buyAsset(d.buy);return}if('choice'in d&&eventModal){const c=eventModal.choices[Number(d.choice)];if(c){c.fn();eventModal=null;if(S.stats.health<=0){die()}else{save();render()}}return}});
+S=load();if(S&&!S.alive)deadModal=true;
+try{render()}catch(e){console.error('Recovered from an invalid saved life:',e);S=null;deadModal=false;eventModal=null;render()}
+})();
+</script>
+</body>
+</html>
