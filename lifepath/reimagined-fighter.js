@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 const RB=window.LifePathReimagined;if(!RB)return;
+const escapeHTML=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
 function arenaState(s){
  const x=RB.ensure(s);
  if(!x.arena||typeof x.arena!=="object")x.arena={wins:0,losses:0,knockouts:0,lastStarted:-1,bout:null};
