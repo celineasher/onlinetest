@@ -190,6 +190,7 @@ function enhance(ctx){
   return;
  }
  const x=RB.ensure(s),tab=ctx.getTab();
+ document.body?.classList?.toggle('lp-no-motion',!x.preferences.animations);
  if(RB.screen&&RB.owner&&RB.owner!==tab){RB.screen=null;RB.owner=null;RB.modal=null;}
  if(RB.lastTab!==tab){
   const body=document.querySelector(".app-main");
