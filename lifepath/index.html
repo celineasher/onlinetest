@@ -1076,7 +1076,7 @@ const worldNotify=function worldNotify(icon,title,description,happy=0){
 };
 const worldRecord=function worldRecord(award){const w=ensureWorld();if(!w.awards.includes(award)){w.awards.push(award);log("🏆","Achievement earned",`You earned the ${award} honor.`);}};
 const worldSpend=function worldSpend(n){if(S.money<n){notice(`You need ${cash(n)}.`,true);return false;}S.money-=n;return true;};
-const worldYear=function worldYear(){
+let worldYear=function worldYear(){
  if(!S||!S.alive)return;
  const w=ensureWorld(),c=w.special,career=getCareer();
  if(w.prison>0){
